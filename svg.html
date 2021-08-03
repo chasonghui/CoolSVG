@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Virtual Lab (Canvas ver.)</title>
+    <title>Virtual Lab (SVG ver.)</title>
     <link rel="shortcut icon" href="#">
-    <link rel="stylesheet" href="canvas.css">
+    <link rel="stylesheet" href="svg.css">
     <script src="https://cdn.jsdelivr.net/npm/handsontable@9.0.1/dist/handsontable.full.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/handsontable@9.0.1/dist/handsontable.full.min.css" rel="stylesheet"
@@ -13,10 +13,10 @@
 </head>
 
 <body>
-    <div class="container">
-        <video class="video" autoplay id="vd1" src="30도.mp4"></video>
-        <canvas class="canvas" id="cv1">HTML5 Canvas를 지원하지 않는 웹브라우저 입니다.</canvas>
-    </div>
+    <svg id=svg1 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 30" onload="makeDraggable(evt)">
+        <line x1="0" y1="10" x2="500" y2="90" stroke="orange" stroke-width="1"></line>
+    </svg>
+    <video class="video" autoplay id="vd1" src="60도.mp4" z-index="-999"></video>
     <!-- Video Controls -->
     <div id="vcontrols" class="video-controls">
         <input type="range" id="seek-bar" value="0">
@@ -47,7 +47,7 @@
 
     </div>
 
-    <script src="canvas.js"></script>
+    <script src="svg.js"></script>
 </body>
 <script>
 </script>
