@@ -1,0 +1,55 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Virtual Lab (Canvas ver.)</title>
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="canvas.css">
+    <script src="https://cdn.jsdelivr.net/npm/handsontable@9.0.1/dist/handsontable.full.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/handsontable@9.0.1/dist/handsontable.full.min.css" rel="stylesheet"
+        media="screen">
+</head>
+
+<body>
+    <div class="container">
+        <video class="video" autoplay id="vd1" src="30도.mp4"></video>
+        <canvas class="canvas" id="cv1">HTML5 Canvas를 지원하지 않는 웹브라우저 입니다.</canvas>
+    </div>
+    <!-- Video Controls -->
+    <div id="vcontrols" class="video-controls">
+        <input type="range" id="seek-bar" value="0">
+        <br>
+        <button type="button" class="controlbuttons" id="goback" onclick="gobackFrame();">
+            << </button>
+                <button type="button" class="controlbuttons" id="pause" onclick="playPause();">||</button>
+                <button type="button" class="controlbuttons" id="gofoward" onclick="gofowardFrame();"> >> </button>
+                &nbsp;&nbsp;
+                <button type="button" class="controlbuttons" id="replay" onclick="replay();">⟳</button>
+                <button type="button" id="dotRedraw" onclick="retry();">다시찍기</button>
+                <br>
+                <button type="button" id="analysis" onclick="analysisMode();">분석 모드</button>
+                <button id="xyline" onclick="xyLine();">좌표 설정</button>
+                <button id="clear" onclick="clearCanvas();">그림 지우기
+                </button>
+                <br>
+                <form id="inputform">
+                    <input id="input1" type="number" min="0" placeholder="X의 길이 입력 (단위:cm)" /><br>*입력하지않으면 1픽셀 단위로 좌표가
+                    저장됩니다*
+                </form>
+                <button id="save" onclick="drawTable();">표로 저장</button>
+                <!-- <button id="export-string">수정</button> -->
+                <div id="readout"></div>
+                <div id="handson">
+                    <!--여기에 표 동적 생성-->
+                </div>
+
+    </div>
+
+    <script src="canvas.js"></script>
+</body>
+<script>
+</script>
+
+</html>

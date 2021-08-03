@@ -1,0 +1,82 @@
+.container {
+    /* position: relative; */
+  }
+  .video {
+    /* max-width: 100%; */
+    width:100%;
+    height: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-top: 8px;
+    margin-left: 8px;
+    /* 영상 좌우 반전 */
+    -webkit-transform:rotateY(180deg);
+  }
+  .canvas {
+    position: absolute;
+    width:100%;
+    height: auto;
+    /* background-color:rgba(70, 40, 151, 0.2); */
+    cursor: crosshair;
+  }
+  .video-controls{
+    position: absolute;
+    height: auto;
+  }
+  .controlbuttons{
+    height: 50px;
+    width: 50px;
+    border:none;
+    margin:0px;
+  }
+
+  #goback{
+    border-left: black solid 1px;
+  }
+  #gofoward{
+    border-right: black solid 1px;
+  }
+  button{
+    /* -webkit-appearance: none; */
+    /* -moz-appearance: none; */
+    font-weight: bold;
+    border: 1px solid rgb(0, 0, 0); 
+    background-color: rgba(0, 0, 0, 0); 
+    margin: 5px;
+    font-size: 30px;
+
+
+  }
+  button:hover{
+    font-weight: bold;
+    border: none; 
+    background-color: rgba(23, 41, 199, 0.616); 
+    color: white; 
+    font-size: 30px;
+  }
+
+  button:disabled{
+    font-weight: bold;
+      pointer-events: none;
+      color:rgb(145, 145, 145);
+      font-size: 30px;
+  }
+
+  #readout{
+    /* position: absolute; */
+    font-size: 30px;
+    margin: 7px;
+  }
+
+  #table{
+    position:absolute;
+    
+  }
+
+  #input1 {
+    width: 300px;
+      height: 50px;
+      padding: 8px;
+      margin: 5px;
+  }
