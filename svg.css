@@ -1,6 +1,3 @@
-.container {
-    /* position: relative; */
-  }
   .video {
     /* max-width: 100%; */
     width:100%;
@@ -13,13 +10,15 @@
     /* 영상 좌우 반전 */
     -webkit-transform:rotateY(180deg);
   }
-  .canvas {
+
+  #svg1{
     position: absolute;
     width:100%;
     height: auto;
-    /* background-color:rgba(70, 40, 151, 0.2); */
+    z-index: 100;
     cursor: crosshair;
   }
+
   .video-controls{
     position: absolute;
     height: auto;
