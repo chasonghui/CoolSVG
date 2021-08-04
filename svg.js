@@ -61,9 +61,56 @@ window.onresize = function (event) {
 
 }
 
-function makeDraggable(evt) {
-    ;
+function getMousePosition(evt) {
+    var CTM = svg.getScreenCTM();
+    return {
+        x: (evt.clientX - CTM.e) / CTM.a,
+        y: (evt.clientY - CTM.f) / CTM.d
+    };
 }
+
+function makeDraggable(evt) {
+    var line = evt.target;
+    line.addEventListener('mousedown', startDrag);
+    line.addEventListener('mousemove', drag);
+    line.addEventListener('mouseup', endDrag);
+    line.addEventListener('mouseleave', endDrag);
+    var selectedElement = false;
+    var offset, transform;
+    function startDrag(evt) {
+        if (evt.target.classList.contains('draggable')) {
+            selectedElement = evt.target;
+            offset = getMousePosition(evt);
+            // Get all the transforms currently on this element
+            var transforms = selectedElement.transform.baseVal;
+            // Ensure the first transform is a translate transform
+            if (transforms.length === 0 ||
+                transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+                // Create an transform that translates by (0, 0)
+                var translate = svg.createSVGTransform();
+                translate.setTranslate(0, 0);
+                // Add the translation to the front of the transforms list
+                selectedElement.transform.baseVal.insertItemBefore(translate, 0);
+            }
+            // Get initial translation amount
+            transform = transforms.getItem(0);
+            offset.x -= transform.matrix.e;
+            offset.y -= transform.matrix.f;
+        }
+    }
+    function drag(evt) {
+        if (selectedElement) {
+            evt.preventDefault();
+            var coord = getMousePosition(evt);
+            transform.setTranslate(coord.x - offset.x, coord.y - offset.y);
+        }
+    }
+    function endDrag(evt) {
+        selectedElement = null;
+    }
+}
+
+
 //캔버스 숨기기
 function canvasOff() {
 
@@ -170,71 +217,71 @@ function storeycoords(y, yarray) {
 
 
 //캔버스 컨트롤 ----------------------------------------
-svg.addEventListener('click', function (ev) {
-    console.log("SVG Click");
-    var xylineButton = document.getElementById("xyline");
-    var video = document.getElementById("vd1");
-    //var loc = windowToCanvas(canvas, ev.clientX, ev.clientY);
-    var dot = coordsObj.xylineDot[0];//원점
-    var save_time = 0;//클릭시 동영상의 시간
-    var find = 0;//프레임중복제거변수 
-    //최신 좌표---------------------
-    var x = loc.x;
-    var y = loc.y;
-    var r = 5;
-    var c = "rgb(29, 219, 22)";
-    //------------------------------
-    save_time = video.currentTime;//클릭시 시간
+// svg.addEventListener('click', function (ev) {
+//     console.log("SVG Click");
+//     var xylineButton = document.getElementById("xyline");
+//     var video = document.getElementById("vd1");
+//     //var loc = windowToCanvas(canvas, ev.clientX, ev.clientY);
+//     var dot = coordsObj.xylineDot[0];//원점
+//     var save_time = 0;//클릭시 동영상의 시간
+//     var find = 0;//프레임중복제거변수 
+//     //최신 좌표---------------------
+//     var x = loc.x;
+//     var y = loc.y;
+//     var r = 5;
+//     var c = "rgb(29, 219, 22)";
+//     //------------------------------
+//     save_time = video.currentTime;//클릭시 시간
 
-    //한 프레임에 하나만 찍기 : time배열에 동일한 시간이 존재하지 않도록함------------------------------
-    function findtime(element) {
-        if (element === save_time) return true;
-    }
-    find = coordsObj.frameTime.findIndex(findtime);
+//     //한 프레임에 하나만 찍기 : time배열에 동일한 시간이 존재하지 않도록함------------------------------
+//     function findtime(element) {
+//         if (element === save_time) return true;
+//     }
+//     find = coordsObj.frameTime.findIndex(findtime);
 
-    //analysis mode 분석모드 ------------------------------------------------------------
-    //xy라인버튼 안누름
-    if ((video.paused === true) && (xylineButton.disabled === false)) {
-        alert("xy좌표를 먼저 설정하세요.");
-        clickCnt = 0;
-    }
-    //xy라인버튼 누름,설정완료
-    else if (flagObj.xylineFlag === true) {
-        var input = document.getElementById("input1");
-        var saveButton = document.getElementById("save");
-        console.log("좌표 찍음");
-        input.disabled = true;
-        saveButton.disabled = false;
-        // clearButton.disabled = false;
-        if ((find === -1)) {
+//     //analysis mode 분석모드 ------------------------------------------------------------
+//     //xy라인버튼 안누름
+//     if ((video.paused === true) && (xylineButton.disabled === false)) {
+//         alert("xy좌표를 먼저 설정하세요.");
+//         clickCnt = 0;
+//     }
+//     //xy라인버튼 누름,설정완료
+//     else if (flagObj.xylineFlag === true) {
+//         var input = document.getElementById("input1");
+//         var saveButton = document.getElementById("save");
+//         console.log("좌표 찍음");
+//         input.disabled = true;
+//         saveButton.disabled = false;
+//         // clearButton.disabled = false;
+//         if ((find === -1)) {
 
-            //실제 좌표 push -> 다시찍기 할때 clearrect에 사용될
-            coordsObj.realx.push(loc.x);
-            coordsObj.realy.push(loc.y);
+//             //실제 좌표 push -> 다시찍기 할때 clearrect에 사용될
+//             coordsObj.realx.push(loc.x);
+//             coordsObj.realy.push(loc.y);
 
-            //클릭한 좌표를 coordes배열에 저장 x:짝수, y:홀수, 8px=1cm(기본값)으로 나눔
-            //+,-를 붙여줌 -> number로 반환
-            storexcoords(+((loc.x - dot.x) * defalut).toFixed(3), coordsObj.xcd);
-            storeycoords(-((loc.y - dot.y) * defalut).toFixed(3), coordsObj.ycd);
-            coordsObj.frameTime.push(save_time.toFixed(3));
-            video.currentTime = save_time + 0.04;//프레임이동 
-        }
-        else {
-            console.log("엥 여길 왜들어와");
-            //이상없음
-        }
-    }
-    //xyLine xy좌표버튼 누름, 설정안함-----------------------------------------------------------------------
-    else if (flagObj.xylineFlag === false) {
+//             //클릭한 좌표를 coordes배열에 저장 x:짝수, y:홀수, 8px=1cm(기본값)으로 나눔
+//             //+,-를 붙여줌 -> number로 반환
+//             storexcoords(+((loc.x - dot.x) * defalut).toFixed(3), coordsObj.xcd);
+//             storeycoords(-((loc.y - dot.y) * defalut).toFixed(3), coordsObj.ycd);
+//             coordsObj.frameTime.push(save_time.toFixed(3));
+//             video.currentTime = save_time + 0.04;//프레임이동 
+//         }
+//         else {
+//             console.log("엥 여길 왜들어와");
+//             //이상없음
+//         }
+//     }
+//     //xyLine xy좌표버튼 누름, 설정안함-----------------------------------------------------------------------
+//     else if (flagObj.xylineFlag === false) {
 
-    }
-    else {
-        console.log("예상하지못한 오류");
-        canvasOff();
-    }
+//     }
+//     else {
+//         console.log("예상하지못한 오류");
+//         canvasOff();
+//     }
 
 
-});
+// });
 //-----------------------------------------------------------------------------------------------
 
 //다시찍기-----------------------------------------------------------------------------------
