@@ -11,18 +11,15 @@
     -webkit-transform:rotateY(180deg);
   }
 
-  #svg1{
-    position: absolute;
-    width:100%;
-    height: auto;
-    z-index: 100;
-    cursor: crosshair;
+  .draggable{
+    cursor: move;
   }
 
   .video-controls{
     position: absolute;
     height: auto;
   }
+
   .controlbuttons{
     height: 50px;
     width: 50px;
@@ -30,12 +27,6 @@
     margin:0px;
   }
 
-  #goback{
-    border-left: black solid 1px;
-  }
-  #gofoward{
-    border-right: black solid 1px;
-  }
   button{
     /* -webkit-appearance: none; */
     /* -moz-appearance: none; */
@@ -44,9 +35,8 @@
     background-color: rgba(0, 0, 0, 0); 
     margin: 5px;
     font-size: 30px;
-
-
   }
+
   button:hover{
     font-weight: bold;
     border: none; 
@@ -60,6 +50,22 @@
       pointer-events: none;
       color:rgb(145, 145, 145);
       font-size: 30px;
+  }
+  
+  #svg1{
+    position: absolute;
+    width:100%;
+    height: auto;
+    z-index: 100;
+    cursor: crosshair;
+  }
+
+  #goback{
+    border-left: black solid 1px;
+  }
+
+  #gofoward{
+    border-right: black solid 1px;
   }
 
   #readout{

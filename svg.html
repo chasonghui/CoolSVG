@@ -13,10 +13,13 @@
 </head>
 
 <body>
-    <svg id=svg1 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 30" onload="makeDraggable(evt)">
-        <line x1="0" y1="10" x2="500" y2="90" stroke="orange" stroke-width="1"></line>
+    <svg id=svg1 class="invisible" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 30" onload="makeDraggable(evt)">
+        <path id=xyline class="draggable" d="M 120 0 L490 0 L485 -10 L500 0 L485 10 L490 0" stroke-width="1.5"
+            stroke="yellow" fill="yellow">
+        </path>
+
     </svg>
-    <video class="video" autoplay id="vd1" src="60도.mp4" z-index="-999"></video>
+    <video class="video" autoplay id="vd1" src="30도.mp4"></video>
     <!-- Video Controls -->
     <div id="vcontrols" class="video-controls">
         <input type="range" id="seek-bar" value="0">
@@ -27,10 +30,11 @@
                 <button type="button" class="controlbuttons" id="gofoward" onclick="gofowardFrame();"> >> </button>
                 &nbsp;&nbsp;
                 <button type="button" class="controlbuttons" id="replay" onclick="replay();">⟳</button>
-                <button type="button" id="dotRedraw" onclick="retry();">다시찍기</button>
+
                 <br>
                 <button type="button" id="analysis" onclick="analysisMode();">분석 모드</button>
-                <button id="xyline" onclick="xyLine();">좌표 설정</button>
+                <button id="xyline" onclick="setxyLine();">좌표 고정</button><br>
+                <button type="button" id="dotRedraw" onclick="retry();">다시찍기</button>
                 <button id="clear" onclick="clearCanvas();">그림 지우기
                 </button>
                 <br>

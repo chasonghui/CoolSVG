@@ -82,15 +82,10 @@ function makeDraggable(evt) {
         if (evt.target.classList.contains('draggable')) {
             selectedElement = evt.target;
             offset = getMousePosition(evt);
-            // Get all the transforms currently on this element
             var transforms = selectedElement.transform.baseVal;
-            // Ensure the first transform is a translate transform
-            // Create an transform that translates by (0, 0)
             var translate = svg.createSVGTransform();
             translate.setTranslate(0, 0);
-            // Add the translation to the front of the transforms list
             selectedElement.transform.baseVal.insertItemBefore(translate, 0);
-            // 맨처음 변환값 가져오기
             transform = transforms.getItem(0);
             offset.x -= transform.matrix.e;
             offset.y -= transform.matrix.f;
@@ -98,12 +93,12 @@ function makeDraggable(evt) {
     }
     function drag(evt) {
         if (selectedElement) {
-            evt.preventDefault();
+            //evt.preventDefault();
             var coord = getMousePosition(evt);
             var transx = coord.x - offset.x;
             var transy = coord.y - offset.y;
             transform.setTranslate(transx, transy);
-            console.log(transx, transy);
+            console.log(transx, -transy);
         }
     }
 
@@ -179,20 +174,32 @@ function storeycoords(y, yarray) {
 }
 
 
-//SVG 컨트롤 ----------------------------------------
+//좌표찍기 ----------------------------------------
 svg.addEventListener('click', function (ev) {
     console.log("SVG Click");
     var video = document.getElementById("vd1");
     var save_time = 0;//클릭시 동영상의 시간
     var find = 0;//프레임중복제거변수 
     save_time = video.currentTime;//클릭시 시간
-
     //한 프레임에 하나만 찍기 : time배열에 동일한 시간이 존재하지 않도록함
     function findtime(element) {
         if (element === save_time) return true;
     }
     find = coordsObj.frameTime.findIndex(findtime);
-
+    // draw borders
+    var coords = "M 0, 0";
+    coords += " l 0, 300";
+    coords += " l 300, 0";
+    coords += " l 0, -300";
+    coords += " l -300, 0";
+    var path = document.createElementNS(svg, "path");
+    path.setAttributeNS(null, 'stroke', "#000000");
+    path.setAttributeNS(null, 'stroke-width', 10);
+    path.setAttributeNS(null, 'stroke-linejoin', "round");
+    path.setAttributeNS(null, 'd', coords);
+    path.setAttributeNS(null, 'fill', "url(#gradient)");
+    path.setAttributeNS(null, 'opacity', 1.0);
+    svg.appendChild(path);
 
     if ((find === -1)) {
 
