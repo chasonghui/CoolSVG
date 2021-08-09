@@ -173,7 +173,23 @@ function storeycoords(y, yarray) {
     yarray.push(y);
 }
 
-
+//점찍기
+function getNode(n, v) {
+    n = document.createElementNS("http://www.w3.org/2000/svg", n);
+    for (var p in v) {
+        n.setAttributeNS(null, p, v[p]);
+    }
+    return n;
+}
+//마우스포지션디텍션
+function onMousePosSVG(e) {
+    var p = svg.createSVGPoint();
+    p.x = e.clientX;
+    p.y = e.clientY;
+    var ctm = svg.getScreenCTM().inverse();
+    var p = p.matrixTransform(ctm);
+    return p;
+}
 //좌표찍기 ----------------------------------------
 svg.addEventListener('click', function (ev) {
     console.log("SVG Click");
@@ -186,23 +202,10 @@ svg.addEventListener('click', function (ev) {
         if (element === save_time) return true;
     }
     find = coordsObj.frameTime.findIndex(findtime);
-    // draw borders
-    var coords = "M 0, 0";
-    coords += " l 0, 300";
-    coords += " l 300, 0";
-    coords += " l 0, -300";
-    coords += " l -300, 0";
-    var path = document.createElementNS(svg, "path");
-    path.setAttributeNS(null, 'stroke', "#000000");
-    path.setAttributeNS(null, 'stroke-width', 10);
-    path.setAttributeNS(null, 'stroke-linejoin', "round");
-    path.setAttributeNS(null, 'd', coords);
-    path.setAttributeNS(null, 'fill', "url(#gradient)");
-    path.setAttributeNS(null, 'opacity', 1.0);
-    svg.appendChild(path);
-
     if ((find === -1)) {
-
+        let m = onMousePosSVG(ev);
+        console.log("(" + m.x, m.y + ")");
+        svg.appendChild(getNode('circle', { cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
         //실제 좌표 push -> 다시찍기 할때 clearrect에 사용될
         // coordsObj.realx.push();
         // coordsObj.realy.push();
