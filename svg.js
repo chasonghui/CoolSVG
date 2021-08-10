@@ -179,7 +179,7 @@ function setxyLine() {
     var video = document.getElementById("vd1");
     var save_time = 0;//클릭시 동영상의 시간
     var find = 0;//프레임중복제거변수 
-    var circleID = 1;//동적으로 생성되는 점의 id값
+    var circleID = 0;//동적으로 생성되는 점의 id값
     xyline.classList.remove('draggable');//drag금지
     flagObj.xylineFlag = true;
     xylinebutton.disabled = true;//좌표고정버튼 비활성화
@@ -196,7 +196,6 @@ function setxyLine() {
             video.currentTime = save_time + 0.04;//프레임이동
             if ((find === -1)) {//동일한 프레임에 찍은 점이 없음
                 let m = onMousePosSVG(ev);
-
                 console.log("찍은곳의 좌표: (" + m.x.toFixed(3), m.y.toFixed(3) + ")");
                 svg.appendChild(getNode('circle', { id: circleID, cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
                 circleID++;
@@ -224,6 +223,7 @@ function retry() {
     var fixcurrentTime = video.currentTime
     var frameindex = coordsObj.frameTime.indexOf((fixcurrentTime - 0.04).toFixed(3));
     var analysisButton = document.getElementById("analysis");
+
     analysisButton.disabled = true;
     playpause.disabled = false;
     if (frameindex === -1) {
@@ -233,10 +233,13 @@ function retry() {
     console.log("삭제하려는 프레임 :" + (fixcurrentTime - 0.04).toFixed(3));
     console.log("frame index: " + frameindex);
     coordsObj.frameTime.splice(frameindex, 1);
-    coordsObj.xcd.splice(frameindex, 1);
-    coordsObj.ycd.splice(frameindex, 1);
-    coordsObj.realx.splice(frameindex, 1);
-    coordsObj.realy.splice(frameindex, 1);
+    if (frameindex != -1) {
+        document.getElementById(frameindex).remove();
+    }
+    // coordsObj.xcd.splice(frameindex, 1);
+    // coordsObj.ycd.splice(frameindex, 1);
+    // coordsObj.realx.splice(frameindex, 1);
+    // coordsObj.realy.splice(frameindex, 1);
     video.currentTime = video.currentTime - 0.04;
     console.log("삭제완 : " + coordsObj.frameTime);
 }
