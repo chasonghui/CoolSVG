@@ -173,40 +173,42 @@ function onMousePosSVG(e) {
 
 //좌표고정 
 function setxyLine() {
-    console.log("원점 고정");
+    console.log("좌표고정");
+    var xylinebutton = document.getElementById("xylinebutton");
+    var xyline = document.getElementById("xyline");
+    var video = document.getElementById("vd1");
+    var save_time = 0;//클릭시 동영상의 시간
+    var find = 0;//프레임중복제거변수 
+    xyline.classList.remove('draggable');//drag금지
     flagObj.xylineFlag = true;
+    xylinebutton.disabled = true;//좌표고정버튼 비활성화
     if (flagObj.xylineFlag == true) {
         //svg클릭이벤트
         svg.addEventListener('click', function (ev) {
-            console.log("SVG Click");
-            var video = document.getElementById("vd1");
-            var xylinebutton = document.getElementById("xyline");
-            var save_time = 0;//클릭시 동영상의 시간
-            var find = 0;//프레임중복제거변수 
-            if (flagObj.xylineFlag == false) {    //좌표 고정 안했을 경우 
-                alert("좌표 고정 버튼을 눌러주세요");
+            console.log("Click!");
+            save_time = video.currentTime;//클릭시 시간
+            console.log(coordsObj.frameTime);
+            //한 프레임에 하나만 찍기 : time배열에 동일한 시간이 존재하지 않도록함
+            function findtime(element) {
+                console.log("element:" + element);
+                console.log("save_time:" + save_time);
+                if (element === save_time.toFixed(3)) return true;
             }
-            else if (flagObj.xylineFlag == true) {//좌표고정 했을 경우
-                //onclick이벤트 제거
-                document.getElementById('xyline').classList.replace('draggable', 'static');
-                //한 프레임에 하나만 찍기 : time배열에 동일한 시간이 존재하지 않도록함
-                save_time = video.currentTime;//클릭시 시간
-                function findtime(element) {
-                    if (element === save_time) return true;
-                }
-                find = coordsObj.frameTime.findIndex(findtime);
-                if ((find === -1)) {
-                    let m = onMousePosSVG(ev);
-                    console.log("(" + m.x.toFixed(3), m.y.toFixed(3) + ")");
-                    svg.appendChild(getNode('circle', { cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
-                }
-                else {
-                    console.log("?");
-                    //이상없음
-                }
+            find = coordsObj.frameTime.findIndex(findtime);//찾는값이 없을 시 -1 return
+            // video.currentTime = save_time + 0.04;//프레임이동
+            console.log(find);
+            if ((find === -1)) {//동일한 프레임에 찍은 점이 없음
+                let m = onMousePosSVG(ev);
+                console.log("(" + m.x.toFixed(3), m.y.toFixed(3) + ")");
+                svg.appendChild(getNode('circle', { cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
+                coordsObj.frameTime.push(save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
             }
-
+            else {//동일한 프레임에 찍은 점이 존재
+                console.log("이미찍음 ㅡㅡ");
+            }
         });
+    } else {
+        console.log("좌표 고정 버튼을 클릭하세요.");
     }
 }
 
