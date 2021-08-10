@@ -14,9 +14,10 @@
 
 <body>
     <svg id=svg1 class="invisible" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 30" onload="makeDraggable(evt)">
-        <path id=xyline class="draggable confine" d="M 120 0 L490 0 L485 -10 L500 0 L485 10 L490 0" stroke-width="1.5"
-            stroke="yellow" fill="yellow">
+        <path id=xyline class="draggable confine" d="M 50 50 L80 50 M51 50 L50 21" stroke-width="2" stroke="yellow"
+            fill="transparent">
         </path>
+
 
     </svg>
     <video class="video" autoplay id="vd1" src="30도.mp4"></video>
@@ -33,9 +34,9 @@
 
                 <br>
                 <button type="button" id="analysis" onclick="analysisMode();">분석 모드</button>
-                <button id="xyline" onclick="setxyLine();">좌표 고정</button><br>
+                <button id="xylinebutton" onclick="setxyLine();">좌표 고정</button><br>
                 <button type="button" id="dotRedraw" onclick="retry();">다시찍기</button>
-                <button id="clear" onclick="clearCanvas();">그림 지우기
+                <button id="clear" onclick="">그림 지우기
                 </button>
                 <br>
                 <form id="inputform">
