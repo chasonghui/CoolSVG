@@ -43,8 +43,6 @@ function init() {
     //input 리로딩 해제
     inputform.addEventListener('submit', handleSubmit);
     resizeSVG();
-
-
 }
 
 //창크기 변경시 
@@ -157,7 +155,9 @@ function storeycoords(y, yarray) {
 function getNode(n, v) {
     n = document.createElementNS("http://www.w3.org/2000/svg", n);
     for (var p in v) {
+        var i = 0;
         n.setAttributeNS(null, p, v[p]);
+
     }
     return n;
 }
@@ -179,6 +179,7 @@ function setxyLine() {
     var video = document.getElementById("vd1");
     var save_time = 0;//클릭시 동영상의 시간
     var find = 0;//프레임중복제거변수 
+    var circleID = 1;//동적으로 생성되는 점의 id값
     xyline.classList.remove('draggable');//drag금지
     flagObj.xylineFlag = true;
     xylinebutton.disabled = true;//좌표고정버튼 비활성화
@@ -187,24 +188,22 @@ function setxyLine() {
         svg.addEventListener('click', function (ev) {
             console.log("Click!");
             save_time = video.currentTime;//클릭시 시간
-            console.log(coordsObj.frameTime);
             //한 프레임에 하나만 찍기 : time배열에 동일한 시간이 존재하지 않도록함
             function findtime(element) {
-                console.log("element:" + element);
-                console.log("save_time:" + save_time);
                 if (element === save_time.toFixed(3)) return true;
             }
             find = coordsObj.frameTime.findIndex(findtime);//찾는값이 없을 시 -1 return
-            // video.currentTime = save_time + 0.04;//프레임이동
-            console.log(find);
+            video.currentTime = save_time + 0.04;//프레임이동
             if ((find === -1)) {//동일한 프레임에 찍은 점이 없음
                 let m = onMousePosSVG(ev);
-                console.log("(" + m.x.toFixed(3), m.y.toFixed(3) + ")");
-                svg.appendChild(getNode('circle', { cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
+
+                console.log("찍은곳의 좌표: (" + m.x.toFixed(3), m.y.toFixed(3) + ")");
+                svg.appendChild(getNode('circle', { id: circleID, cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
+                circleID++;
                 coordsObj.frameTime.push(save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
             }
             else {//동일한 프레임에 찍은 점이 존재
-                console.log("이미찍음 ㅡㅡ");
+                console.log("이미찍은 Frame");
             }
         });
     } else {
@@ -218,9 +217,8 @@ function setxyLine() {
 function retry() {
     //현재 비디오 프레임값(video.currentTime)을 저장된 coordsObj의 frametime에서 찾은후 그 위치의 index를 찾아서 
     //x,y인덱스를 찾아서 삭제하고 (오브젝트에서 삭제)
-    //그 위치를 clearrect한다..
-
-    console.log("현재 점 모든값 삭제 !!")
+    //그 위치의 <circle>을 삭제한다. 
+    console.log("다시찍기")
     var video = document.getElementById("vd1");
     var playpause = document.getElementById("pause");
     var fixcurrentTime = video.currentTime
@@ -231,22 +229,23 @@ function retry() {
     if (frameindex === -1) {
         console.log("삭제하려는 프레임" + (fixcurrentTime - 0.04).toFixed(3) + "에 찍힌 좌표가 존재하지 않음");
     }
-    console.log("frametime : " + coordsObj.frameTime);
-    console.log("fixcurrentTime.toFixed(3)-0.04: " + (fixcurrentTime - 0.04).toFixed(3));
-    console.log("frameindex: " + frameindex);
+    console.log("저장된 프레임들 : " + coordsObj.frameTime);
+    console.log("삭제하려는 프레임 :" + (fixcurrentTime - 0.04).toFixed(3));
+    console.log("frame index: " + frameindex);
     coordsObj.frameTime.splice(frameindex, 1);
     coordsObj.xcd.splice(frameindex, 1);
     coordsObj.ycd.splice(frameindex, 1);
     coordsObj.realx.splice(frameindex, 1);
     coordsObj.realy.splice(frameindex, 1);
     video.currentTime = video.currentTime - 0.04;
+    console.log("삭제완 : " + coordsObj.frameTime);
 }
 //-------------------------------------------------------------------------------------------
 
 //readout 좌표 update(innerText)
 function updateReadout(x, y) { //div 부분에 좌표 입력(readout)
     var readout = document.getElementById('readout');
-    readout.innerText = '좌표 : (' + x.toFixed(3) + ',' + y.toFixed(3) + ')';//고정 소수점 표기법으로 표기
+    readout.innerText = '좌표 : (' + x.toFixed(3) + ',' + y.toFixed(3) + ')';
 }
 
 //clear버튼 : 배열들 초기화 
