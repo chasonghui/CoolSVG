@@ -34,21 +34,18 @@
 
                 <br>
                 <button type="button" id="analysis" onclick="analysisMode();">분석 모드</button>
-                <button id="xylinebutton" onclick="setxyLine();">좌표 고정</button><br>
+                <button id="xylinebutton" onclick="setxyLine();">좌표 고정</button>
                 <button type="button" id="dotRedraw" onclick="retry();">다시찍기</button>
-                <button id="clear" onclick="">그림 지우기
-                </button>
-                <br>
-                <form id="inputform">
-                    <input id="input1" type="number" min="0" placeholder="X의 길이 입력 (단위:cm)" /><br>*입력하지않으면 1픽셀 단위로 좌표가
-                    저장됩니다*
-                </form>
-                <button id="save" onclick="drawTable();">표로 저장</button>
-                <!-- <button id="export-string">수정</button> -->
-                <div id="readout"></div>
-                <div id="handson">
-                    <!--여기에 표 동적 생성-->
-                </div>
+        </button>
+        <br>
+        <form id="inputform">
+            <input id="input1" type="number" min="0" placeholder="X의 길이 입력 (단위:cm)" /><br>*입력하지않으면 1픽셀 단위로 좌표가
+            저장됩니다*
+        </form>
+        <div id="readout"></div>
+        <div id="handson">
+            <!--여기에 표 동적 생성-->
+        </div>
 
     </div>
 
