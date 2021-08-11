@@ -19,13 +19,13 @@ var coordsObj = {
 var clickCnt = 0;
 var defalut = 1;
 var screendot = 0;
-//-------------------------------------------
 
+
+//초기
 function init() {
-    var saveButton = document.getElementById("save");
     var inputform = document.getElementById("inputform");
     var input = document.getElementById("input1");
-
+    var xylinebutton = document.getElementById("xylinebutton");
     var seekBar = document.getElementById("seek-bar");
     var video = document.getElementById("vd1");
     var analysisButton = document.getElementById("analysis");
@@ -36,9 +36,10 @@ function init() {
     seekBar.style.width = w;
     //시작 시
     svg.style.visibility = "hidden";
-    saveButton.disabled = true;
+
     input.disabled = true;
     analysisButton.disabled = false;
+    xylinebutton.disabled = true;
 
     //input 리로딩 해제
     inputform.addEventListener('submit', handleSubmit);
@@ -69,14 +70,15 @@ function makeDraggable(evt) {
     function startDrag(evt) {
         if (evt.target.classList.contains('draggable')) {
             selectedElement = evt.target;
-            offset = getMousePosition(evt);
-            var transforms = selectedElement.transform.baseVal;
-            var translate = svg.createSVGTransform();
-            translate.setTranslate(0, 0);
+            offset = getMousePosition(evt);//마우스 포지션 가져와
+            var transforms = selectedElement.transform.baseVal;//젤처음 요소 가져와
+            var translate = svg.createSVGTransform();//svg
+            translate.setTranslate(0, 0);//시작할때마다 0,0
             selectedElement.transform.baseVal.insertItemBefore(translate, 0);
             transform = transforms.getItem(0);
             offset.x -= transform.matrix.e;
             offset.y -= transform.matrix.f;
+
         }
     }
     function drag(evt) {
@@ -86,7 +88,7 @@ function makeDraggable(evt) {
             var transx = coord.x - offset.x;
             var transy = coord.y - offset.y;
             transform.setTranslate(transx, transy);
-            console.log(transx.toFixed(3), -transy.toFixed(3));
+            console.log(transx.toFixed(3), transy.toFixed(3));
         }
     }
 
@@ -97,79 +99,17 @@ function makeDraggable(evt) {
 
 }
 
-
-
-// SVG리사이징 
-function resizeSVG() {
-    var video = document.getElementById("vd1");
-    var seekBar = document.getElementById("seek-bar");
-    var vcontrols = document.getElementById("vcontrols");
-    var w = video.offsetWidth;
-    var h = video.offsetHeight;
-    svg.style.width = w;
-    svg.style.height = h;
-    vcontrols.style.marginTop = h;
-    seekBar.style.width = w;
-}
-
-svg.onmousemove = function (e) {
-
-};
-
-function playPause() {
-    resizeSVG();
-    var video = document.getElementById("vd1");
-    var playpause = document.getElementById("pause");
-    var analysisButton = document.getElementById("analysis")
-
-    if (flagObj.playFlag == true) {
-        analysisButton.disabled = false;
-        video.pause();
-        playpause.innerText = "▷";
-        flagObj.playFlag = false;
-    }
-    else {
-        video.play();
-        analysisButton.disabled = true;
-        playpause.innerText = "||";
-        flagObj.playFlag = true;
-    }
-}
-
-//SVG input 값 가져오기
-function getInput() {
-    var input = document.getElementById("input1");
-    return input.value;
-}
-
-//찍은좌표저장
-function storexcoords(x, xarray) {
-    xarray.push(x);
-
-}
-function storeycoords(y, yarray) {
-    yarray.push(y);
-}
-
 //좌표찍기함수화 circle
 function getNode(n, v) {
     n = document.createElementNS("http://www.w3.org/2000/svg", n);
     for (var p in v) {
         var i = 0;
         n.setAttributeNS(null, p, v[p]);
-
     }
     return n;
 }
 //마우스위치
-function onMousePosSVG(e) {
-    var p = svg.createSVGPoint();
-    p.x = e.clientX;
-    p.y = e.clientY;
-    var ctm = svg.getScreenCTM().inverse();
-    var p = p.matrixTransform(ctm);
-    return p;
-}
+
 
 //좌표고정 
 function setxyLine() {
@@ -195,9 +135,9 @@ function setxyLine() {
             find = coordsObj.frameTime.findIndex(findtime);//찾는값이 없을 시 -1 return
             video.currentTime = save_time + 0.04;//프레임이동
             if ((find === -1)) {//동일한 프레임에 찍은 점이 없음
-                let m = onMousePosSVG(ev);
+                let m = getMousePosition(ev);
                 console.log("찍은곳의 좌표: (" + m.x.toFixed(3), m.y.toFixed(3) + ")");
-                svg.appendChild(getNode('circle', { id: circleID, cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
+                svg.appendChild(getNode('circle', { id: circleID, class: "allCircle", cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
                 circleID++;
                 coordsObj.frameTime.push(save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
             }
@@ -208,6 +148,57 @@ function setxyLine() {
     } else {
         console.log("좌표 고정 버튼을 클릭하세요.");
     }
+}
+
+// SVG리사이징 
+function resizeSVG() {
+    var video = document.getElementById("vd1");
+    var seekBar = document.getElementById("seek-bar");
+    var vcontrols = document.getElementById("vcontrols");
+    var w = video.offsetWidth;
+    var h = video.offsetHeight;
+    svg.style.width = w;
+    svg.style.height = h;
+    vcontrols.style.marginTop = h;
+    seekBar.style.width = w;
+}
+
+svg.onmousemove = function (e) {
+    var readout = document.getElementById("readout");
+    var getmouspos = getMousePosition(e);
+    readout.innerHTML = "(" + getmouspos.x.toFixed(3) + "," + getmouspos.y.toFixed(3) + ")";
+
+};
+
+function playPause() {
+    resizeSVG();
+    var video = document.getElementById("vd1");
+    var playpause = document.getElementById("pause");
+    if (flagObj.playFlag == true) {
+        video.pause();
+        playpause.innerText = "▷";
+        flagObj.playFlag = false;
+    }
+    else {
+        video.play();
+        playpause.innerText = "||";
+        flagObj.playFlag = true;
+    }
+}
+
+//SVG input 값 가져오기
+function getInput() {
+    var input = document.getElementById("input1");
+    return input.value;
+}
+
+//찍은좌표저장
+function storexcoords(x, xarray) {
+    xarray.push(x);
+
+}
+function storeycoords(y, yarray) {
+    yarray.push(y);
 }
 
 
@@ -251,7 +242,7 @@ function updateReadout(x, y) { //div 부분에 좌표 입력(readout)
     readout.innerText = '좌표 : (' + x.toFixed(3) + ',' + y.toFixed(3) + ')';
 }
 
-//clear버튼 : 배열들 초기화 
+//배열들 초기화 
 function arrayinitialize() {
     coordsObj.xylineDot = [];//초기화
     coordsObj.xycoords = [];
@@ -264,33 +255,16 @@ function arrayinitialize() {
 
 //비디오 replay
 function replay() {
-    var input = document.getElementById("input1");
-    var saveButton = document.getElementById("save");
-    var analysisButton = document.getElementById("analysis");
     var video = document.getElementById("vd1");
-    coordsObj.xylineDot = [];//초기화
+    var playbutton = document.getElementById("pause");
     video.currentTime = 0.0;
     video.play();
-    analysisButton.disabled = false;//분석모드버튼 활성화
-    saveButton.disabled = true;
-    input.disabled = true;
-    // clearButton.disabled = true;
-    // flagObj.xylineFlag = "false";
+    playbutton.innerText = "||";
+    flagObj.playFlag = true;
 }
 
+//좌표모두지우기
 function clearSVG() {
-    var analysisButton = document.getElementById("analysis");
-    var input = document.getElementById("input1");
-    var saveButton = document.getElementById("save");
-
-    var analysisButton = document.getElementById("analysis");
-
-
-    analysisButton.disabled = false;//분석모드버튼 활성화
-
-    saveButton.disabled = true;
-    input.disabled = true;
-    arrayinitialize();
 
 }
 
@@ -324,24 +298,22 @@ function getValue() {
     return currentValue;
 }
 
-//분석모드 버튼 클릭 시 
+//분석모드
 function analysisMode() {
-    var saveButton = document.getElementById("save");
-    var xyline = document.getElementById("xyline");
+    console.log("분석모드 진입");
     var analysisButton = document.getElementById("analysis");
     var video = document.getElementById("vd1");
+    var xylinebutton = document.getElementById("xylinebutton");
+    var playbutton = document.getElementById("pause");
     svg.style.visibility = "visible";
-    pause.disabled = true;
-    console.log("분석모드 진입");
-    coordsObj.xylineDot = [];//원점 초기화
     flagObj.xylineFlag = false;
     coordsObj.xycoords = [];
     resizeSVG();//SVG 크기 조절
     video.pause();
-
+    playbutton.innerText = "▷";
+    flagObj.playFlag = false;
     analysisButton.disabled = true;//분석모드 버튼 비활성화
-    saveButton.disabled = true;
-
+    xylinebutton.disabled = false;//좌표고정 버튼 활성화
 }
 
 function gobackFrame() {
@@ -407,8 +379,6 @@ function divRemove() {
     }
     flagObj.tableFlag = false;
     var _child = document.getElementById("table");
-
-    var analysisButton = document.getElementById("analysis");
     _child.parentNode.removeChild(_child);
 
 }
