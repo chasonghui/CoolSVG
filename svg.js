@@ -124,9 +124,9 @@ function drawDot() {
 
     //------------------------------------------------------------------------------------------
     var transforms = xyline.transform.baseVal;//젤처음 요소 가져와
+    var translate = svg.createSVGTransform();//svgTransform
     transform = transforms.getItem(0);
-    var translate = svg.createSVGTransform();//svg
-    translate.setTranslate(0, 0);//시작할때마다 0,0
+    translate.setTranslate(0, 0);//원점으로 설정
     coordsObj.realx = transform.matrix.e;
     coordsObj.realy = transform.matrix.f;
     console.log(coordsObj.realx, coordsObj.realy);
@@ -134,8 +134,6 @@ function drawDot() {
     xyline.classList.remove('draggable');//drag금지
     flagObj.xylineFlag = true;
     xylinebutton.disabled = true;//좌표고정버튼 비활성화
-
-    console.log(xyline.getAttribute("x"));
 
     if (flagObj.xylineFlag == true) {
         //svg클릭이벤트
@@ -150,12 +148,14 @@ function drawDot() {
             video.currentTime = save_time + constVar.customFrame;//프레임이동
             if ((find === -1)) {//동일한 프레임에 찍은 점이 없음
                 let m = getMousePosition(ev);
+                var pushx = m.x - coordsObj.realx - 50;
+                var pushy = m.y - coordsObj.realy - 50;
                 console.log("찍은곳의 좌표: (" + m.x.toFixed(3), m.y.toFixed(3) + ")");
                 svg.appendChild(getNode('circle', { id: constVar.circleID, class: "allCircle", cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
                 constVar.circleID++;//id값 증가
                 coordsObj.frameTime.push(save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
-                coordsObj.xcd.push(m.x.toFixed(3));//클릭시 x좌표 push
-                coordsObj.ycd.push(m.y.toFixed(3));//클릭시 y좌표 push
+                coordsObj.xcd.push(pushx.toFixed(3));//클릭시 x좌표 push
+                coordsObj.ycd.push(-pushy.toFixed(3));//클릭시 y좌표 push
                 drawTable();
             }
             else {//동일한 프레임에 찍은 점이 존재
@@ -186,6 +186,7 @@ svg.onmousemove = function (e) {
     var offset = getMousePosition(e);
     offset.x -= coordsObj.realx;
     offset.y -= coordsObj.realy;
+    //<path d="M 50 50 ..." 이기 때문에 -50을 해줘야함.
     readout.innerHTML = "(" + (offset.x - 50).toFixed(3) + "," + -((offset.y - 50).toFixed(3)) + ")";
 };
 
@@ -268,9 +269,12 @@ function retry() {
         video.currentTime = video.currentTime - constVar.customFrame;//한프레임 앞으로
         console.log("삭제완 : " + coordsObj.frameTime);
     }
-    else {
-        console.log("삭제할 좌표값이 존재하지 않음");
+    else if (constVar.circleID == 0) {
+        console.log("마지막 좌표값");
         divRemove();//표 형태까지 삭제
+    }
+    else {
+        console.log("저장된 좌표가 존재하지 않음");
     }
 }
 //-------------------------------------------------------------------------------------------

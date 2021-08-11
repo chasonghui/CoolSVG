@@ -17,10 +17,8 @@
         <path id=xyline class="draggable confine" d="M 50 50 L80 50 M51 50 L50 21" stroke-width="2" stroke="yellow"
             fill="transparent">
         </path>
-
-
     </svg>
-    <video class="video" autoplay id="vd1" src="30도.mp4"></video>
+    <video class="video" autoplay id="vd1" src="60도.mp4"></video>
     <!-- Video Controls -->
     <div id="vcontrols" class="video-controls">
         <input type="range" id="seek-bar" value="0">
@@ -34,7 +32,7 @@
 
                 <br>
                 <button type="button" id="analysis" onclick="analysisMode();">분석 모드</button>
-                <button id="xylinebutton" onclick="setxyLine();">좌표 고정</button>
+                <button id="xylinebutton" onclick="drawDot();">좌표 고정</button>
                 <button type="button" id="dotRedraw" onclick="retry();">다시찍기</button>
         </button>
         <br>

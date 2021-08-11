@@ -3,12 +3,9 @@
     width:100%;
     height: auto;
     position: absolute;
-    top: 0;
-    left: 0;
-    margin-top: 8px;
-    margin-left: 8px;
     /* 영상 좌우 반전 */
     -webkit-transform:rotateY(180deg);
+
   }
 
   .draggable{
