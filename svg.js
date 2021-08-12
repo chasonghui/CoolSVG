@@ -8,22 +8,20 @@ var flagObj = {
 }
 //좌표모음
 var coords = {
-    xycoords: [],
     realx: 0,
     realy: 0,
     xcd: [],
     ycd: [],
     frameTime: [],
-    xylineDot: [],
-
 }
 //변수모음
 var gloVar = {
     pxtoCM: 1,//input에 따라 좌표에 곱해질 변수
     circleID: 0,//동적으로 생성될 <circle>의 id값
-    dragCnt: 0,
+    dragCnt: 0,//드래그 횟수 count
     customFrame: 0.04,//임의로 정해놓은 Frame값
-    pathD: 50
+    pathD: 50,//<path 태그의 d위치값 (html에서 사용자 지정)
+    guidePx: 100//<path id=guideline의 L150 -M50
 }
 
 
@@ -140,12 +138,14 @@ function drawDot() {
     var xylinebutton = document.getElementById("xylinebutton");
     var xyline = document.getElementById("xyline");
     var video = document.getElementById("vd1");
+    var inputform = document.getElementById("input1");
     var save_time = 0;//클릭시 동영상의 시간
     var find = 0;//프레임중복제거변수 
 
     xyline.classList.remove('draggable');//drag금지
     flagObj.xylineFlag = true;
     xylinebutton.disabled = true;//좌표고정버튼 비활성화
+    inputform.disabled = false;
 
     setOrigin();//원점변환
 
@@ -162,9 +162,8 @@ function drawDot() {
             video.currentTime = save_time + gloVar.customFrame;//프레임이동
             if ((find === -1)) {//동일한 프레임에 찍은 점이 없음
                 let m = getMousePosition(ev);
-                var pushx = m.x - coords.realx - gloVar.pathD;
-                var pushy = m.y - coords.realy - gloVar.pathD;
-                console.log("찍은곳의 좌표: (" + m.x.toFixed(3), m.y.toFixed(3) + ")");
+                var pushx = (m.x - coords.realx - gloVar.pathD) * gloVar.pxtoCM;
+                var pushy = (m.y - coords.realy - gloVar.pathD) * gloVar.pxtoCM;
                 svg.appendChild(getNode('circle', { id: gloVar.circleID, class: "allCircle", cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
                 gloVar.circleID++;//id값 증가
                 coords.frameTime.push(save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
@@ -201,7 +200,7 @@ svg.onmousemove = function (e) {
     offset.x -= coords.realx;
     offset.y -= coords.realy;
     //<path d="M 50 50 ..." 이기 때문에 -50을 해줘야함.
-    readout.innerHTML = "(" + (offset.x - gloVar.pathD).toFixed(3) + "," + -(offset.y - gloVar.pathD).toFixed(3) + ")";
+    readout.innerHTML = "(" + ((offset.x - gloVar.pathD) * gloVar.pxtoCM).toFixed(3) + "," + -((offset.y - gloVar.pathD) * gloVar.pxtoCM).toFixed(3) + ")";
 };
 
 function playPause() {
@@ -283,7 +282,7 @@ function retry() {
         video.currentTime = video.currentTime - gloVar.customFrame;//한프레임 앞으로
         console.log("삭제완 : " + coords.frameTime);
     }
-    else if (gloVar.circleID == 0) {
+    if (gloVar.circleID == 0) {
         console.log("마지막 좌표값");
         divRemove();//표 형태까지 삭제
     }
@@ -294,15 +293,13 @@ function retry() {
 //-------------------------------------------------------------------------------------------
 
 
-//배열들 초기화 
+//coords obj
 function arrayinitialize() {
-    coords.xylineDot = [];//초기화
-    coords.xycoords = [];
     coords.frameTime = [];
-    coords.realx = [];
-    coords.realy = [];
     coords.xcd = [];
     coords.ycd = [];
+    coords.realx = 0;
+    coords.realy = 0;
 }
 
 //비디오 replay
@@ -336,17 +333,20 @@ function handleSubmit(event) {
 //값받기
 function getValue() {
     var input = document.getElementById("input1");
-    var currentValue = input.value;
-    console.log("입력한 x의 값: " + currentValue);
-    input.placeholder = "x의 길이: " + currentValue + "cm";
+    var guidetext = document.getElementById("guidetext");
+    var inputVal = input.value;
+
+    input.placeholder = "x의 길이: " + inputVal + "cm";
+    guidetext.innerHTML = inputVal + " cm";//svg guidetext 수정
     //값 보내기
     if (input.value = '') {
-        currentValue = 8;
+        inputVal = 8;
     }
     else {
-        currentValue = currentValue / origin;
+        inputVal = inputVal / gloVar.guidePx;
+        gloVar.pxtoCM = inputVal;
     }
-    return currentValue;
+    return inputVal;
 }
 
 //분석모드
@@ -358,7 +358,7 @@ function analysisMode() {
     var playbutton = document.getElementById("pause");
     svg.style.visibility = "visible";
     flagObj.xylineFlag = false;
-    coords.xycoords = [];
+
     resizeSVG();//SVG 크기 조절
     video.pause();
     playbutton.innerText = "▷";

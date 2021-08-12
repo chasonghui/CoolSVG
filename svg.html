@@ -13,10 +13,14 @@
 </head>
 
 <body>
-    <svg id=svg1 class="invisible" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 30" onload="makeDraggable(evt)">
-        <path id=xyline class="draggable confine" d="M 50 50 L80 50 M51 50 L50 21" stroke-width="2" stroke="yellow"
+    <svg id="svg1" class="invisible" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 30"
+        onload="makeDraggable(evt)">
+        <path id="xyline" class="draggable confine" d="M 50 50 L80 50 M51 50 L50 21" stroke-width="2" stroke="yellow"
             fill="transparent">
         </path>
+        <path id="guideline" d="M50 190 L150 190" stroke-width="3" stroke="red" fill="transparent">
+        </path>
+        <text id="guidetext" x="90" y="205" fill="red" font-size="15">x cm</text>
     </svg>
     <video class="video" autoplay id="vd1" src="60도.mp4"></video>
     <!-- Video Controls -->
@@ -37,8 +41,7 @@
         </button>
         <br>
         <form id="inputform">
-            <input id="input1" type="number" min="0" placeholder="X의 길이 입력 (단위:cm)" /><br>*입력하지않으면 1픽셀 단위로 좌표가
-            저장됩니다*
+            <input id="input1" type="number" min="0" placeholder="X의 길이 입력 (단위:cm)" /><br>*입력하지않으면 픽셀 단위*
         </form>
         <div id="readout"></div>
         <div id="handson">
