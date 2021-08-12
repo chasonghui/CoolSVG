@@ -57,6 +57,7 @@ window.onresize = function (event) {
 
 function getMousePosition(evt) {
     var CTM = svg.getScreenCTM();
+    if (evt.touches) { evt = evt.touches[0]; }//모바일환경
     return {
         x: (evt.clientX - CTM.e) / CTM.a,
         y: (evt.clientY - CTM.f) / CTM.d
@@ -65,10 +66,21 @@ function getMousePosition(evt) {
 
 function makeDraggable(evt) {
     var line = evt.target;
+    //----------------------pc 환경------------------------
     line.addEventListener('mousedown', startDrag);
     line.addEventListener('mousemove', drag);
     line.addEventListener('mouseup', endDrag);
     line.addEventListener('mouseleave', endDrag);
+
+    //---------------------모바일 환경--------------------
+    svg.addEventListener('touchstart', startDrag);
+    svg.addEventListener('touchmove', drag);
+    svg.addEventListener('touchend', endDrag);
+    svg.addEventListener('touchleave', endDrag);
+    svg.addEventListener('touchcancel', endDrag);
+
+    //--------------------
+
     var selectedElement = false;
     var offset, transform;
     function startDrag(evt) {
