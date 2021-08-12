@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap");
   .video {
     /* max-width: 100%; */
     width:100%;
@@ -17,36 +18,41 @@
     height: auto;
   }
 
-  .controlbuttons{
-    height: 50px;
-    width: 50px;
-    border:none;
-    margin:0px;
-  }
 
   button{
-    /* -webkit-appearance: none; */
-    /* -moz-appearance: none; */
-    font-weight: bold;
-    border: 1px solid rgb(0, 0, 0); 
-    background-color: rgba(0, 0, 0, 0); 
-    margin: 5px;
-    font-size: 30px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 0.5rem 1rem;
+    background-color:#8fbcff ;
+    --button-hover-bg-color: #4193ff;
+    color: white;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    margin-bottom: 10px;
+
+    display: inline-block;
+    width: auto;
+
+    border: none;
+    border-radius: 4px;
+
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    transition: 0.5s;
   }
 
-  button:hover{
-    font-weight: bold;
-    border: none; 
-    background-color: rgba(23, 41, 199, 0.616); 
-    color: white; 
-    font-size: 30px;
+  button:active,
+  button:hover,
+  button:focus {
+    background: var(--button-hover-bg-color);
+    outline: 0;
   }
-
-  button:disabled{
-    font-weight: bold;
-      pointer-events: none;
-      color:rgb(145, 145, 145);
-      font-size: 30px;
+  button:disabled {
+    opacity: 0.5;
   }
   
   #svg1{
@@ -55,14 +61,6 @@
     height: auto;
     z-index: 100;
     cursor: crosshair;
-  }
-
-  #goback{
-    border-left: black solid 1px;
-  }
-
-  #gofoward{
-    border-right: black solid 1px;
   }
 
   #readout{
@@ -81,6 +79,6 @@
     width: 300px;
       height: 50px;
       padding: 8px;
-      margin: 5px;
+      margin-left: 2px;
   }
 
