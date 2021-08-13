@@ -24,7 +24,6 @@ var gloVar = {
     guidePx: 100//<path id=guideline의 L150 -M50
 }
 
-
 //초기
 function init() {
     var inputform = document.getElementById("inputform");
@@ -73,11 +72,11 @@ function makeDraggable(evt) {
     line.addEventListener('mouseleave', endDrag);
 
     //---------------------모바일 환경--------------------
-    svg.addEventListener('touchstart', startDrag);
-    svg.addEventListener('touchmove', drag);
-    svg.addEventListener('touchend', endDrag);
-    svg.addEventListener('touchleave', endDrag);
-    svg.addEventListener('touchcancel', endDrag);
+    line.addEventListener('touchstart', startDrag);
+    line.addEventListener('touchmove', drag);
+    line.addEventListener('touchend', endDrag);
+    line.addEventListener('touchleave', endDrag);
+    line.addEventListener('touchcancel', endDrag);
 
 
     var selectedElement = false;
@@ -250,9 +249,9 @@ function storeycoords(y, yarray) {
 
 //다시찍기
 function retry() {
-    //현재 비디오 프레임값(video.currentTime)을 coords의 frametime에서 찾은 후 그 위치의 index를 찾음.
+    //현재 비디오 프레임값(video.currentTime)을 coords의 frametime에서 찾은 후 그 위치의 index를 찾음
     //찾은 인덱스값과 같은 x,y인덱스를 찾아서 그 위치의 값을 삭제하고 (오브젝트에서 삭제)
-    //찾은 인덱스값을 id값으로 가진 <circle>태그 자체를 삭제. 
+    //찾은 인덱스값을 id값으로 가진 <circle>태그 자체를 삭제
     console.log("다시찍기");
     var video = document.getElementById("vd1");
     var playpause = document.getElementById("pause");
@@ -260,7 +259,7 @@ function retry() {
     var frameindex = coords.frameTime.indexOf((fixcurrentTime - gloVar.customFrame).toFixed(3));
     var analysisButton = document.getElementById("analysis");
     var gobackbutton = document.getElementById("goback");
-    console.log(gloVar.circleID);
+
     gobackbutton.disabled = true;//뒤로가기 비활성화
     analysisButton.disabled = true;//분석모드 비활성화
     playpause.disabled = false;//재생버튼 활성화
@@ -275,10 +274,6 @@ function retry() {
             coords.frameTime.splice(frameindex, 1);
             coords.xcd.splice(frameindex, 1);
             coords.ycd.splice(frameindex, 1);
-
-            // coords.realx.splice(frameindex, 1);
-            // coords.realy.splice(frameindex, 1);
-
             divRemove();//표 삭제 
             drawTable();//표 생성
 
@@ -290,12 +285,13 @@ function retry() {
         console.log("frame index: " + frameindex);
 
     }
-    if (gloVar.circleID == 0) {
+    if (gloVar.circleID == 0 && frameindex != -1) {
         console.log("마지막 좌표값");
         divRemove();//표 형태까지 삭제
     }
     else {
         console.log("저장된 좌표가 존재하지 않음");
+        //video.currentTime = video.currentTime - gloVar.customFrame;//한프레임 앞으로
     }
 }
 //-------------------------------------------------------------------------------------------
@@ -324,7 +320,8 @@ function clearSVG() {
 
 }
 
-//submit 입력 버튼 클릭시 리로딩 없이 값 초기화
+//input form enter -> 리로딩 없이 값 초기화
+//리로딩하면 동영상이 다시 재생됨
 function handleSubmit(event) {
     var input = document.getElementById("input1");
     event.preventDefault();
@@ -337,19 +334,21 @@ function handleSubmit(event) {
     input.disabled = true;
 }
 
-//값 받기
+//값 받기, 좌표변환
 function getValue() {
     var input = document.getElementById("input1");
     var guidetext = document.getElementById("guidetext");
     var inputVal = input.value;
 
     input.placeholder = "x의 길이: " + inputVal + "cm";
-    guidetext.innerHTML = inputVal + " cm";//svg guidetext 수정
+    guidetext.innerHTML = inputVal + " cm";//svg guidetext
 
     if (input.value = '') {
-        inputVal = 100;
+        inputVal = 100;//현재 px 
     }
     else {
+        //현재 가이드라인: 100px -> 입력값으로 변환하려면
+        //100*(입력값/100)
         inputVal = inputVal / gloVar.guidePx;
         gloVar.pxtoCM = inputVal;
     }
@@ -358,7 +357,7 @@ function getValue() {
 
 //분석모드
 function analysisMode() {
-    console.log("분석모드 진입");
+    console.log("분석모드");
     var analysisButton = document.getElementById("analysis");
     var video = document.getElementById("vd1");
     var xylinebutton = document.getElementById("xylinebutton");
@@ -373,7 +372,7 @@ function analysisMode() {
     video.pause();
     playbutton.innerText = "▷";
 
-    flagObj.playFlag = false;
+    flagObj.playFlag = false;//playflag
     analysisButton.disabled = true;//분석모드 버튼 비활성화
     xylinebutton.disabled = false;//좌표고정 버튼 활성화
 }
@@ -393,6 +392,8 @@ function drawTable() {
     console.log("Call drawTable()");
     var analysisButton = document.getElementById("analysis");
     analysisButton.disabled = true;
+    //한번찍을때마다 테이블이 update되야하므로 tableflag가 true일땐
+    //table을 지우고 다시그림
     if (flagObj.tableFlag === true) {
         divRemove();
     }
@@ -430,20 +431,21 @@ function drawTable() {
 
 }
 
-//테이블 remove 버튼 : id가 table인 div 삭제 
+//table remove
 function divRemove() {
     //표가 없을경우 
     if (flagObj.tableFlag === false) {
         return;
     }
     flagObj.tableFlag = false;
+    //id=table인 div 자체를 삭제 
     var _child = document.getElementById("table");
     _child.parentNode.removeChild(_child);
 
 }
 
 
-//비디오 컨트롤러, 버튼들---------------------------------------------------------
+//video control
 window.onload = function () {
     var video = document.getElementById("vd1");
     var seekBar = document.getElementById("seek-bar");
@@ -452,14 +454,14 @@ window.onload = function () {
         video.currentTime = seektime;
     });
 
-    // 재생시간에 따른 재생바 이동
+    //재생시간에 따른 재생바 이동
     video.addEventListener("timeupdate", function () {
         // Calculate the slider value
         var value = (100 / video.duration) * video.currentTime;
         // Update the slider value
         seekBar.value = value;
     });
-    // 재생바 드래그하려고 클릭시에 동영상 정지
+    // 재생바 클릭시 동영상 중지
     seekBar.addEventListener("mousedown", function () {
         video.pause();
 
