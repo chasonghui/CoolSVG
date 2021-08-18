@@ -4,7 +4,8 @@ var svg = document.getElementById("svg1");
 var flagObj = {
     xylineFlag: false,
     tableFlag: false,
-    playFlag: true
+    playFlag: true,
+    inputFlag: false
 }
 //좌표모음
 var coords = {
@@ -19,7 +20,7 @@ var gloVar = {
     pxtoCM: 1,//input에 따라 좌표에 곱해질 변수
     circleID: 0,//동적으로 생성될 <circle>의 id값
     dragCnt: 0,//드래그 횟수 count
-    customFrame: 0.04,//임의로 정해놓은 Frame값
+    customFrame: 0.040,//임의로 정해놓은 Frame값
     pathD: 50,//<path 태그의 d위치값 (html에서 사용자 지정)
     guidePx: 100//<path id=guideline의 L150 -M50
 }
@@ -65,6 +66,7 @@ function getMousePosition(evt) {
 
 function makeDraggable(evt) {
     var line = evt.target;
+    var setButton = document.getElementById("xylinebutton");
     //----------------------pc 환경------------------------
     line.addEventListener('mousedown', startDrag);
     line.addEventListener('mousemove', drag);
@@ -78,7 +80,7 @@ function makeDraggable(evt) {
     line.addEventListener('touchleave', endDrag);
     line.addEventListener('touchcancel', endDrag);
 
-
+    setButton.disabled = false;
     var selectedElement = false;
     var offset, transform;
     function startDrag(evt) {
@@ -163,27 +165,33 @@ function drawDot() {
         //svg클릭이벤트
         buttonDisable();//버튼 비활성화
         svg.addEventListener('click', function (ev) {
-            console.log("Click!");
-            save_time = video.currentTime;//클릭시 시간
-            function findtime(element) {//한 프레임에 하나만 찍기 : time배열에 동일한 시간이 존재하지 않도록함
-                if (element === save_time.toFixed(3)) return true;
+            if (flagObj.inputFlag == false) {
+                alert("X의 길이를 입력해주세요");
             }
-            find = coords.frameTime.findIndex(findtime);//찾는값이 없을 시 -1 return
-            video.currentTime = save_time + gloVar.customFrame;//프레임이동
-            if ((find === -1)) {//동일한 프레임에 찍은 점이 없음
-                let m = getMousePosition(ev);
-                var pushx = (m.x - coords.realx - gloVar.pathD) * gloVar.pxtoCM;
-                var pushy = (m.y - coords.realy - gloVar.pathD) * gloVar.pxtoCM;
-                svg.appendChild(getNode('circle', { id: gloVar.circleID, class: "allCircle", cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
-                gloVar.circleID++;//id값 증가
-                coords.frameTime.push(save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
-                coords.xcd.push(pushx.toFixed(3));//클릭시 x좌표 push
-                coords.ycd.push(-pushy.toFixed(3));//클릭시 y좌표 push
-                drawTable();
+            else {
+                console.log("Click!");
+                save_time = video.currentTime;//클릭시 시간
+                function findtime(element) {//한 프레임에 하나만 찍기 : time배열에 동일한 시간이 존재하지 않도록함
+                    if (element === save_time.toFixed(3)) return true;
+                }
+                find = coords.frameTime.findIndex(findtime);//찾는값이 없을 시 -1 return
+                video.currentTime = save_time + gloVar.customFrame;//프레임이동
+                if ((find === -1)) {//동일한 프레임에 찍은 점이 없음
+                    let m = getMousePosition(ev);
+                    var pushx = (m.x - coords.realx - gloVar.pathD) * gloVar.pxtoCM;
+                    var pushy = (m.y - coords.realy - gloVar.pathD) * gloVar.pxtoCM;
+                    svg.appendChild(getNode('circle', { id: gloVar.circleID, class: "allCircle", cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
+                    gloVar.circleID++;//id값 증가
+                    coords.frameTime.push(save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
+                    coords.xcd.push(pushx.toFixed(3));//클릭시 x좌표 push
+                    coords.ycd.push(-pushy.toFixed(3));//클릭시 y좌표 push
+                    drawTable();
+                }
+                else {//동일한 프레임에 찍은 점이 존재
+                    console.log("이미찍은 Frame");
+                }
             }
-            else {//동일한 프레임에 찍은 점이 존재
-                console.log("이미찍은 Frame");
-            }
+
         });
     } else {
         console.log("좌표 고정 버튼을 클릭하세요.");
@@ -330,6 +338,7 @@ function clearSVG() {
 //리로딩하면 동영상이 다시 재생됨
 function handleSubmit(event) {
     var input = document.getElementById("input1");
+    flagObj.inputFlag = true;
     event.preventDefault();
     gloVar.pxtoCM = getValue();
     console.log(
