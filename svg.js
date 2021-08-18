@@ -161,11 +161,11 @@ function drawDot() {
 
     if (flagObj.xylineFlag == true) {
         //svg클릭이벤트
+        buttonDisable();//버튼 비활성화
         svg.addEventListener('click', function (ev) {
             console.log("Click!");
             save_time = video.currentTime;//클릭시 시간
-            //한 프레임에 하나만 찍기 : time배열에 동일한 시간이 존재하지 않도록함
-            function findtime(element) {
+            function findtime(element) {//한 프레임에 하나만 찍기 : time배열에 동일한 시간이 존재하지 않도록함
                 if (element === save_time.toFixed(3)) return true;
             }
             find = coords.frameTime.findIndex(findtime);//찾는값이 없을 시 -1 return
@@ -188,6 +188,18 @@ function drawDot() {
     } else {
         console.log("좌표 고정 버튼을 클릭하세요.");
     }
+}
+
+//버튼비활성화
+function buttonDisable() {
+    var gobackbutton = document.getElementById("goback");
+    var playbutton = document.getElementById("pause");
+    var replaybutton = document.getElementById("replay");
+    var seekbar = document.getElementById("seek-bar");
+    gobackbutton.disabled = true;
+    playbutton.disabled = true;
+    replaybutton.disabled = true;
+    seekbar.disabled = true;
 }
 
 // SVG리사이징 
@@ -254,15 +266,9 @@ function retry() {
     //찾은 인덱스값을 id값으로 가진 <circle>태그 자체를 삭제
     console.log("다시찍기");
     var video = document.getElementById("vd1");
-    var playpause = document.getElementById("pause");
     var fixcurrentTime = video.currentTime
     var frameindex = coords.frameTime.indexOf((fixcurrentTime - gloVar.customFrame).toFixed(3));
-    var analysisButton = document.getElementById("analysis");
-    var gobackbutton = document.getElementById("goback");
 
-    gobackbutton.disabled = true;//뒤로가기 비활성화
-    analysisButton.disabled = true;//분석모드 비활성화
-    playpause.disabled = false;//재생버튼 활성화
     if (gloVar.circleID > 0) {
         gloVar.circleID--;// <circle>에 부여되는 id값 감소(다시찍기를 다시할때 필요)
         if (frameindex === -1) {//찾으려는 값이 없을때 
@@ -363,10 +369,13 @@ function analysisMode() {
     var xylinebutton = document.getElementById("xylinebutton");
     var playbutton = document.getElementById("pause");
     var seekBar = document.getElementById("seek-bar");
+    var replayButton = document.getElementById("replay");
 
+    // replayButton.disabled = true;
+    // playbutton.disabled = true;
     svg.style.visibility = "visible";
     flagObj.xylineFlag = false;
-    seekBar.disabled = true;
+    // seekBar.disabled = true;
 
     resizeSVG();//SVG 크기 조절
     video.pause();
