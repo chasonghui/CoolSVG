@@ -5,7 +5,8 @@ var flagObj = {
     xylineFlag: false,
     tableFlag: false,
     playFlag: true,
-    inputFlag: false
+    inputFlag: false,
+    DragFlag: false
 }
 //좌표모음
 var coords = {
@@ -29,10 +30,11 @@ var gloVar = {
 function init() {
     var inputform = document.getElementById("inputform");
     var input = document.getElementById("input1");
-    var xylinebutton = document.getElementById("xylinebutton");
+    var setxy = document.getElementById("setxy");
     var seekBar = document.getElementById("seek-bar");
     var video = document.getElementById("vd1");
     var analysisButton = document.getElementById("analysis");
+    var retrybutton = document.getElementById("dotRedraw");
 
     //비디오 크기
     var w = video.offsetWidth;
@@ -43,8 +45,8 @@ function init() {
 
     input.disabled = true;
     analysisButton.disabled = false;
-    xylinebutton.disabled = true;
-
+    setxy.disabled = true;
+    retrybutton.disabled = true;
     //input 리로딩 해제
     inputform.addEventListener('submit', handleSubmit);
     resizeSVG();
@@ -66,7 +68,7 @@ function getMousePosition(evt) {
 
 function makeDraggable(evt) {
     var line = evt.target;
-    var setButton = document.getElementById("xylinebutton");
+    var setxy = document.getElementById("setxy");
     //----------------------pc 환경------------------------
     line.addEventListener('mousedown', startDrag);
     line.addEventListener('mousemove', drag);
@@ -80,10 +82,12 @@ function makeDraggable(evt) {
     line.addEventListener('touchleave', endDrag);
     line.addEventListener('touchcancel', endDrag);
 
-    setButton.disabled = false;
+
     var selectedElement = false;
     var offset, transform;
     function startDrag(evt) {
+        setxy.disabled = false;
+        flagObj.DragFlag = true;
         if (evt.target.classList.contains('draggable')) {
             gloVar.dragCnt++;
             selectedElement = evt.target;
@@ -146,8 +150,9 @@ function setOrigin() {
 
 //좌표고정 + 점찍기
 function drawDot() {
+    if (flagObj.DragFlag === false) { alert("좌표의 위치를 옮겨주세요."); return; }
     console.log("좌표고정");
-    var xylinebutton = document.getElementById("xylinebutton");
+    var xylinebutton = document.getElementById("setxy");
     var xyline = document.getElementById("xyline");
     var video = document.getElementById("vd1");
     var inputform = document.getElementById("input1");
@@ -275,12 +280,12 @@ function retry() {
     console.log("다시찍기");
     var video = document.getElementById("vd1");
     var fixcurrentTime = video.currentTime
-    var frameindex = coords.frameTime.indexOf((fixcurrentTime - gloVar.customFrame).toFixed(3));
+    var frameindex = coords.frameTime.indexOf(fixcurrentTime.toFixed(3) - gloVar.customFrame.toFixed(3));
 
     if (gloVar.circleID > 0) {
         gloVar.circleID--;// <circle>에 부여되는 id값 감소(다시찍기를 다시할때 필요)
         if (frameindex === -1) {//찾으려는 값이 없을때 
-            console.log("삭제하려는 프레임" + (fixcurrentTime - gloVar.customFrame).toFixed(3) + "에 찍힌 좌표가 존재하지 않음");
+            console.log("삭제하려는 프레임" + fixcurrentTime.toFixed(3) - gloVar.customFrame.toFixed(3) + "에 찍힌 좌표가 존재하지 않음");
         }
         else if (frameindex != -1) {//찾으려는 값이 있을때
             document.getElementById(frameindex).remove();
@@ -375,7 +380,7 @@ function analysisMode() {
     console.log("분석모드");
     var analysisButton = document.getElementById("analysis");
     var video = document.getElementById("vd1");
-    var xylinebutton = document.getElementById("xylinebutton");
+    var xylinebutton = document.getElementById("setxy");
     var playbutton = document.getElementById("pause");
     var seekBar = document.getElementById("seek-bar");
     var replayButton = document.getElementById("replay");
