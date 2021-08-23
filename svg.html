@@ -47,12 +47,22 @@
         <div id="handson">
             <!--여기에 표 동적 생성-->
         </div>
-        <button type="button" class="controlbuttons" id="savebutton" onclick="">저장하기</button>
-        <button type="button" class="controlbuttons" id="savebutton" onclick="">불러오기</button>
+        <!-- <button type="submit" class="controlbuttons" id="saveData">저장하기</button> -->
+        <!-- <button type="submit" class="controlbuttons" id="bringData">불러오기</button> -->
+        <div>
+            <form id="userdata-create">
+                <input type="text" id="solverId" name="solverId" placeholder="SolverId" autocomplete="off" />
+                <button type="submit">저장하기</button>
+            </form>
+            <form id="userdata-search">
+                <button type="submit">불러오기</button>
+            </form>
+            <div id="userdata-container"></div>
+        </div>
     </div>
-
-
     <script src="svg.js"></script>
+    <script src="savedata.js"></script>
+    <script src="getUserdatas.js"></script>
 </body>
 <script>
 </script>
