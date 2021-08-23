@@ -35,6 +35,7 @@ function init() {
     var video = document.getElementById("vd1");
     var analysisButton = document.getElementById("analysis");
     var retrybutton = document.getElementById("dotRedraw");
+    var xyline2 = document.getElementById("xyline2");
 
     //비디오 크기
     var w = video.offsetWidth;
@@ -42,6 +43,7 @@ function init() {
     seekBar.style.width = w;
     //시작 시
     svg.style.visibility = "hidden";
+    xyline2.style.display = "none";
 
     input.disabled = true;
     analysisButton.disabled = false;
@@ -55,6 +57,17 @@ function init() {
 //창크기 변경시 
 window.onresize = function (event) {
     resizeSVG();
+}
+
+//반전
+const hide = e => e.style.display = 'none'
+const show = e => e.style.display = ''
+const toggleHide = function (selector) {
+    [...document.querySelectorAll(selector)].forEach(e => e.style.display ? show(e) : hide(e))
+    toggleShow('#xyline2');
+}
+const toggleShow = function (selector) {
+    [...document.querySelectorAll(selector)].forEach(e => e.style.display ? show(e) : hide(e))
 }
 
 function getMousePosition(evt) {
@@ -147,6 +160,7 @@ function setOrigin() {
     coords.realx = beforeCoords.x;//drag로 이동된 x값
     coords.realy = beforeCoords.y;//drag로 이동된 y값
 }
+
 
 //좌표고정 + 점찍기
 function drawDot() {
@@ -263,12 +277,18 @@ function getInput() {
 
 //x좌표저장
 function storexcoords(x, xarray) {
-    xarray.push(x);
+    if (xyline.style.display == 'none') {
+        xarray.push(-x);
+    }
+    else {
+        xarray.push(x);
+    }
 
 }
 
 //y좌표 저장
 function storeycoords(y, yarray) {
+
     yarray.push(y);
 }
 

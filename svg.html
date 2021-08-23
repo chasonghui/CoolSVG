@@ -18,6 +18,9 @@
         <path id="xyline" class="draggable confine" d="M 50 50 L80 50 M51 50 L50 21" stroke-width="2" stroke="yellow"
             fill="transparent">
         </path>
+        <path id="xyline2" class="draggable confine" d="M 20 50 L50 49 M50 50 L50 20" stroke-width="2" stroke="yellow"
+            fill="transparent">
+        </path>
         <path id="guideline" d="M50 190 L150 190" stroke-width="3" stroke="red" fill="transparent">
         </path>
         <text id="guidetext" x="90" y="205" fill="red" font-size="15">x</text>
@@ -33,6 +36,7 @@
                 <button type="button" class="controlbuttons" id="gofoward" onclick="gofowardFrame();"> >> </button>
                 &nbsp;&nbsp;
                 <button type="button" class="controlbuttons" id="replay" onclick="replay();">⟳</button>
+                <button type="button" class="controlbuttons" id="reverse" onclick="toggleHide('#xyline')">반전</button>
 
                 <br>
                 <button type="button" id="analysis" onclick="analysisMode();">분석 모드</button>
