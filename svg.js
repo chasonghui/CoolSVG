@@ -10,7 +10,6 @@ var flagObj = {
 }
 //좌표모음
 var coords = {
-
     xcd: [],
     ycd: [],
     frameTime: [],
@@ -207,8 +206,8 @@ function drawDot() {
                     var pushy = (m.y - gloVar.realy - gloVar.pathD) * gloVar.pxtoCM;
                     svg.appendChild(getNode('circle', { id: gloVar.circleID, class: "allCircle", cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
                     gloVar.circleID++;//id값 증가
-                    coords.frameTime.push(save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
-                    coords.xcd.push(pushx.toFixed(3));//클릭시 x좌표 push
+                    coords.frameTime.push(+save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
+                    coords.xcd.push(+pushx.toFixed(3));//클릭시 x좌표 push
                     coords.ycd.push(-pushy.toFixed(3));//클릭시 y좌표 push
                     drawTable();
                 }
@@ -372,6 +371,7 @@ function handleSubmit(event) {
     flagObj.inputFlag = true;
     event.preventDefault();
     gloVar.pxtoCM = getValue();
+    if (gloVar.pxtoCM == 0) gloVar.pxtoCM = 1;
     console.log(
         "좌표에 곱해질 값 : " + gloVar.pxtoCM
     );
