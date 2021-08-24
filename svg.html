@@ -15,10 +15,10 @@
 <body>
     <svg id="svg1" class="invisible" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 30"
         onload="makeDraggable(evt)">
-        <path id="xyline" class="draggable confine" d="M 50 50 L80 50 M51 50 L50 21" stroke-width="2" stroke="yellow"
+        <path id="xyline1" class="draggable" d="M 50 50 L80 50 M51 50 L50 21" stroke-width="2" stroke="yellow"
             fill="transparent">
         </path>
-        <path id="xyline2" class="draggable confine" d="M 20 50 L50 49 M50 50 L50 20" stroke-width="2" stroke="yellow"
+        <path id="xyline2" class="draggable" d="M 20 50 L50 49 M50 50 L50 20" stroke-width="2" stroke="yellow"
             fill="transparent">
         </path>
         <path id="guideline" d="M50 190 L150 190" stroke-width="3" stroke="red" fill="transparent">
@@ -36,7 +36,7 @@
                 <button type="button" class="controlbuttons" id="gofoward" onclick="gofowardFrame();"> >> </button>
                 &nbsp;&nbsp;
                 <button type="button" class="controlbuttons" id="replay" onclick="replay();">⟳</button>
-                <button type="button" class="controlbuttons" id="reverse" onclick="toggleHide('#xyline')">반전</button>
+                <button type="button" class="controlbuttons" id="reverse" onclick="toggleHide('#xyline1')">반전</button>
 
                 <br>
                 <button type="button" id="analysis" onclick="analysisMode();">분석 모드</button>
@@ -51,11 +51,9 @@
         <div id="handson">
             <!--여기에 표 동적 생성-->
         </div>
-        <!-- <button type="submit" class="controlbuttons" id="saveData">저장하기</button> -->
-        <!-- <button type="submit" class="controlbuttons" id="bringData">불러오기</button> -->
         <div>
             <form id="userdata-create">
-                <input type="text" id="solverId" name="solverId" placeholder="SolverId" autocomplete="off" />
+                <input type="text" id="solverId" name="solverId" placeholder="SolverId" autocomplete="off" /><br><br>
                 <button type="submit">저장하기</button>
             </form>
             <form id="userdata-search">

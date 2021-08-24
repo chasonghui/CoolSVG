@@ -10,8 +10,7 @@ var flagObj = {
 }
 //좌표모음
 var coords = {
-    realx: 0,
-    realy: 0,
+
     xcd: [],
     ycd: [],
     frameTime: [],
@@ -23,7 +22,9 @@ var gloVar = {
     dragCnt: 0,//드래그 횟수 count
     customFrame: 0.040,//임의로 정해놓은 Frame값
     pathD: 50,//<path 태그의 d위치값 (html에서 사용자 지정)
-    guidePx: 100//<path id=guideline의 L150 -M50
+    guidePx: 100,//<path id=guideline의 L150 -M50
+    realx: 0,
+    realy: 0
 }
 
 //초기
@@ -82,6 +83,7 @@ function getMousePosition(evt) {
 function makeDraggable(evt) {
     var line = evt.target;
     var setxy = document.getElementById("setxy");
+    var reverse = document.getElementById("reverse");
     //----------------------pc 환경------------------------
     line.addEventListener('mousedown', startDrag);
     line.addEventListener('mousemove', drag);
@@ -100,10 +102,12 @@ function makeDraggable(evt) {
     var offset, transform;
     function startDrag(evt) {
         setxy.disabled = false;
+        reverse.disabled = true;
         flagObj.DragFlag = true;
         if (evt.target.classList.contains('draggable')) {
             gloVar.dragCnt++;
             selectedElement = evt.target;
+            selectedElement.id = "xyline";
             offset = getMousePosition(evt);//마우스 포지션 가져와
 
             var transforms = selectedElement.transform.baseVal;//젤처음 요소 가져와
@@ -142,8 +146,9 @@ function getNode(n, v) {
 
 //원점변환
 function setOrigin() {
-    var transforms = xyline.transform.baseVal;//요소 가져옴
+    var transforms = document.getElementById("xyline").transform.baseVal;//요소 가져옴
     var translate = svg.createSVGTransform();//svgTransform
+    console.log(transforms);
     transform = transforms.getItem(0);//transforms중에 제일 최근값
     translate.setTranslate(0, 0);//원점으로 설정
     var beforeCoords = {//drag할때마다 누적되는 x,y값 
@@ -157,8 +162,8 @@ function setOrigin() {
             beforeCoords.y += transforms.getItem(i).matrix.f;
         }
     }
-    coords.realx = beforeCoords.x;//drag로 이동된 x값
-    coords.realy = beforeCoords.y;//drag로 이동된 y값
+    gloVar.realx = beforeCoords.x;//drag로 이동된 x값
+    gloVar.realy = beforeCoords.y;//drag로 이동된 y값
 }
 
 
@@ -167,13 +172,14 @@ function drawDot() {
     if (flagObj.DragFlag === false) { alert("좌표의 위치를 옮겨주세요."); return; }
     console.log("좌표고정");
     var xylinebutton = document.getElementById("setxy");
-    var xyline = document.getElementById("xyline");
+    var xyline1 = document.getElementById("xyline1");
     var video = document.getElementById("vd1");
     var inputform = document.getElementById("input1");
     var save_time = 0;//클릭시 동영상의 시간
     var find = 0;//프레임중복제거변수 
+    document.getElementById("xyline").classList.remove('draggable');//drag금지
 
-    xyline.classList.remove('draggable');//drag금지
+
     flagObj.xylineFlag = true;
     xylinebutton.disabled = true;//좌표고정버튼 비활성화
     inputform.disabled = false;
@@ -197,8 +203,8 @@ function drawDot() {
                 video.currentTime = save_time + gloVar.customFrame;//프레임이동
                 if ((find === -1)) {//동일한 프레임에 찍은 점이 없음
                     let m = getMousePosition(ev);
-                    var pushx = (m.x - coords.realx - gloVar.pathD) * gloVar.pxtoCM;
-                    var pushy = (m.y - coords.realy - gloVar.pathD) * gloVar.pxtoCM;
+                    var pushx = (m.x - gloVar.realx - gloVar.pathD) * gloVar.pxtoCM;
+                    var pushy = (m.y - gloVar.realy - gloVar.pathD) * gloVar.pxtoCM;
                     svg.appendChild(getNode('circle', { id: gloVar.circleID, class: "allCircle", cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
                     gloVar.circleID++;//id값 증가
                     coords.frameTime.push(save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
@@ -246,8 +252,8 @@ function resizeSVG() {
 svg.onmousemove = function (e) {
     var readout = document.getElementById("readout");
     var offset = getMousePosition(e);
-    offset.x -= coords.realx;
-    offset.y -= coords.realy;
+    offset.x -= gloVar.realx;
+    offset.y -= gloVar.realy;
     //<path d="M 50 50 ..." 이기 때문에 -50을 해줘야함.
     readout.innerHTML = "(" + ((offset.x - gloVar.pathD) * gloVar.pxtoCM).toFixed(3) + "," + -((offset.y - gloVar.pathD) * gloVar.pxtoCM).toFixed(3) + ")";
 };
@@ -340,8 +346,8 @@ function arrayinitialize() {
     coords.frameTime = [];
     coords.xcd = [];
     coords.ycd = [];
-    coords.realx = 0;
-    coords.realy = 0;
+    gloVar.realx = 0;
+    gloVar.realy = 0;
 }
 
 //비디오 replay
