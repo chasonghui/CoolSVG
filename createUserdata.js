@@ -9,12 +9,11 @@ if (!token) {
 }
 
 const createForm = document.querySelector("#userdata-create");
-
 const createUserdata = (solverId, datas) => `
 mutation {
   createUserdata ( input : {
     solverId : ${solverId},
-    datas : "${datas}"
+    datas : '${datas}'
   }) {
     ok
     error
@@ -35,10 +34,19 @@ const createUserdataCompleted = ({ data }) => {
 const mutation = (ev) => {
     console.log("저장");
     ev.preventDefault();
-    const userdata = coords.xcd;
+    const userdata = coords;
     const solverId = document.querySelector("#solverId").value;
     const query = createUserdata(solverId, userdata);
-
+    console.log(query);
+    // mutation {
+    //     createUserdata ( input : {
+    //       solverId : 1,
+    //       datas : "[object Object]"
+    //     }) {
+    //       ok
+    //       error
+    //     }
+    //   }
     const options = {
         method: "post",
         headers: {
