@@ -13,7 +13,7 @@ const createUserdata = (solverId, datas) => `
 mutation {
   createUserdata ( input : {
     solverId : ${solverId},
-    datas : '${datas}'
+    datas : ${JSON.stringify(datas)}
   }) {
     ok
     error
@@ -34,7 +34,7 @@ const createUserdataCompleted = ({ data }) => {
 const mutation = (ev) => {
     console.log("저장");
     ev.preventDefault();
-    const userdata = coords;
+    const userdata = JSON.stringify(coords);
     const solverId = document.querySelector("#solverId").value;
     const query = createUserdata(solverId, userdata);
     console.log(query);
