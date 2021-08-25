@@ -59,7 +59,7 @@
     position: absolute;
     width:100%;
     height: auto;
-    z-index: 100;
+    z-index: 1000;
     cursor: crosshair;
   }
 
@@ -76,4 +76,3 @@
       padding: 8px;
       margin-left: 2px;
   }
-
