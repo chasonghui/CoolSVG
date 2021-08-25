@@ -1,6 +1,3 @@
-const LOCALSTORAGE_TOKEN = "virtuallabs-token";
-const token = localStorage.getItem(LOCALSTORAGE_TOKEN);
-
 if (!token) {
     localStorage.setItem(
         LOCALSTORAGE_TOKEN,
@@ -37,10 +34,14 @@ const getProfile = ({ data }) => {
     }
     const { id, datas } = userdata;
 
-    const userdataListItem = document.createElement("li");
-    userdataListItem.textContent = `[ID: ${id}] : ${datas}`;
+    // const userdataListItem = document.createElement("li");
+    // userdataListItem.textContent = `[ID: ${id}] : ${datas}`;
+    // userdataContainer.appendChild(userdataListItem);
+    coords.xcd = JSON.parse(datas).xcd;
+    coords.ycd = JSON.parse(datas).ycd;
+    coords.frameTime = JSON.parse(datas).frameTime;
+    drawTable();
 
-    userdataContainer.appendChild(userdataListItem);
 };
 
 const getQuery = (ev) => {
