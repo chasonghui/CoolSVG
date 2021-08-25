@@ -1,3 +1,6 @@
+const LOCALSTORAGE_TOKEN = "virtuallabs-token";
+const token = localStorage.getItem(LOCALSTORAGE_TOKEN);
+
 if (!token) {
     localStorage.setItem(
         LOCALSTORAGE_TOKEN,
@@ -10,38 +13,39 @@ const searchForm = document.querySelector("#userdata-search");
 
 const me = () => `{ me {id, createdAt} }`;
 
-const getUserdatas = () => `{ 
-	getUserdatas {
+const getUserdataById = (id) => `{
+  getUserdatasById(input:{
+    userdataId : ${id}
+  }) {
     ok
     error
-    userdatas {
+    userdata {
       id
       datas
     }
   }
 }`;
 
-const getUserdatasCompleted = ({ data }) => {
+const getProfile = ({ data }) => {
     const {
-        getUserdatas: { ok, error, userdatas },
+        getUserdatasById: { ok, error, userdata },
     } = data;
 
     if (!ok) {
         console.log(error);
         return;
     }
+    const { id, datas } = userdata;
 
-    userdatas.map((userdata) => {
-        // console.log(userdata);
-        const { id, datas } = userdata;
-        const userdataListItem = document.createElement("li");
-        userdataListItem.textContent = `[ID: ${id}] : ${datas}`;
-        userdataContainer.appendChild(userdataListItem);
-    });
+    const userdataListItem = document.createElement("li");
+    userdataListItem.textContent = `[ID: ${id}] : ${datas}`;
+
+    userdataContainer.appendChild(userdataListItem);
 };
 
 const getQuery = (ev) => {
     ev.preventDefault();
+    const keyword = searchForm.elements["search"].value;
 
     const options = {
         method: "post",
@@ -50,13 +54,13 @@ const getQuery = (ev) => {
             "x-jwt": token,
         },
         body: JSON.stringify({
-            query: getUserdatas(),
+            query: getUserdataById(keyword),
         }),
     };
 
     fetch(`https://kaist.edison.re.kr/graphql/`, options)
         .then((res) => res.json())
-        .then(getUserdatasCompleted);
+        .then(getProfile);
 
     searchForm.reset();
 };
