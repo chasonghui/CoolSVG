@@ -6,16 +6,11 @@
     <title>Virtual Lab (SVG ver.)</title>
     <link rel="shortcut icon" href="#">
     <link rel="stylesheet" href="svg.css">
-    <script src="https://cdn.jsdelivr.net/npm/handsontable@9.0.1/dist/handsontable.full.min.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <link rel="stylesheet" href="assets/theme/css/style.css">
+    <link rel="stylesheet" href="assets/tether/tether.min.css">
+    <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
     <link href="https://cdn.jsdelivr.net/npm/handsontable@9.0.1/dist/handsontable.full.min.css" rel="stylesheet"
         media="screen">
-    <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
-    <link rel="stylesheet" href="assets/tether/tether.min.css">
-    <!-- <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css"> -->
-    <!-- <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css"> -->
-    <!-- <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css"> -->
-    <link rel="stylesheet" href="assets/theme/css/style.css">
     <link rel="preload"
         href="https://fonts.googleapis.com/css?family=Jost:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"
         as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -45,18 +40,21 @@
     <div id="vcontrols" class="video-controls">
         <input type="range" id="seek-bar" value="0">
         <br>
-        <button type="button" class="controlbuttons" id="goback" onclick="gobackFrame();">
+        <button type="button" class="btn btn-white display-4" id="goback" onclick="gobackFrame();">
             << </button>
-                <button type="button" class="controlbuttons" id="pause" onclick="playPause();">||</button>
-                <button type="button" class="controlbuttons" id="gofoward" onclick="gofowardFrame();"> >> </button>
+                <button type="button" class="btn btn-white display-4" id="pause" onclick="playPause();">||</button>
+                <button type="button" class="btn btn-white display-4" id="gofoward" onclick="gofowardFrame();"> >>
+                </button>
                 &nbsp;&nbsp;
-                <button type="button" class="controlbuttons" id="replay" onclick="replay();">⟳</button>
-                <button type="button" class="controlbuttons" id="reverse" onclick="toggleHide('#xyline1')">반전</button>
+                <button type="button" class="btn btn-white display-4" id="replay" onclick="replay();">⟳</button>
+                <button type="button" class="btn btn-white display-4" id="reverse"
+                    onclick="toggleHide('#xyline1')">반전</button>
 
                 <br>
-                <button type="button" id="analysis" onclick="analysisMode();">분석 모드</button>
-                <button type="button" id="setxy" onclick="drawDot();">좌표 고정</button>
-                <button type="button" id="dotRedraw" onclick="retry();">다시찍기</button>
+                <button type="button" class="btn btn-white display-4" id="analysis" onclick="analysisMode();">분석
+                    모드</button>
+                <button type="button" class="btn btn-white display-4" id="setxy" onclick="drawDot();">좌표 고정</button>
+                <button type="button" class="btn btn-white display-4" id="dotRedraw" onclick="retry();">다시찍기</button>
         </button>
         <br>
         <form id="inputform">
@@ -69,10 +67,10 @@
         <div>
             <form id="userdata-create">
                 <input type="text" id="solverId" name="solverId" placeholder="SolverId" autocomplete="off" /><br><br>
-                <button type="submit">저장하기</button>
+                <button type="submit" class="btn btn-white display-4">저장하기</button>
             </form>
             <form id="userdata-search">
-                <button type="submit">불러오기</button>
+                <button type="submit" class="btn btn-white display-4">불러오기</button>
             </form>
             <div id="userdata-container"></div>
         </div>
@@ -115,6 +113,7 @@
     <script src="createUserdata.js"></script>
     <script src="getUserdatas.js"></script>
     <script src="./graph.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handsontable@9.0.1/dist/handsontable.full.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.full.min.js"></script>
