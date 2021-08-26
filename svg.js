@@ -23,7 +23,8 @@ var gloVar = {
     pathD: 50,//<path 태그의 d위치값 (html에서 사용자 지정)
     guidePx: 100,//<path id=guideline의 L150 -M50
     realx: 0,
-    realy: 0
+    realy: 0,
+    reverseCount: 0
 }
 
 //초기
@@ -63,11 +64,13 @@ window.onresize = function (event) {
 const hide = e => e.style.display = 'none'
 const show = e => e.style.display = ''
 const toggleHide = function (selector) {
+    gloVar.reverseCount++;
     [...document.querySelectorAll(selector)].forEach(e => e.style.display ? show(e) : hide(e))
     toggleShow('#xyline2');
 }
 const toggleShow = function (selector) {
     [...document.querySelectorAll(selector)].forEach(e => e.style.display ? show(e) : hide(e))
+
 }
 
 function getMousePosition(evt) {
@@ -207,8 +210,8 @@ function drawDot() {
                     svg.appendChild(getNode('circle', { id: gloVar.circleID, class: "allCircle", cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
                     gloVar.circleID++;//id값 증가
                     coords.frameTime.push(+save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
-                    coords.xcd.push(+pushx.toFixed(3));//클릭시 x좌표 push
-                    coords.ycd.push(-pushy.toFixed(3));//클릭시 y좌표 push
+                    storexcoords(+pushx.toFixed(3), coords.xcd);
+                    storeycoords(-pushy.toFixed(3), coords.ycd);
                     drawTable();
                 }
                 else {//동일한 프레임에 찍은 점이 존재
@@ -250,11 +253,15 @@ function resizeSVG() {
 //readout
 svg.onmousemove = function (e) {
     var readout = document.getElementById("readout");
+    var xyline = document.getElementById("xyline");
     var offset = getMousePosition(e);
+    var xminus = 1;
     offset.x -= gloVar.realx;
     offset.y -= gloVar.realy;
-    //<path d="M 50 50 ..." 이기 때문에 -50을 해줘야함.
-    readout.innerHTML = "(" + ((offset.x - gloVar.pathD) * gloVar.pxtoCM).toFixed(3) + "," + -((offset.y - gloVar.pathD) * gloVar.pxtoCM).toFixed(3) + ")";
+    if (gloVar.reverseCount % 2 != 0) {
+        xminus = -1;
+    }
+    readout.innerHTML = "(" + (xminus * (offset.x - gloVar.pathD) * gloVar.pxtoCM).toFixed(3) + "," + -((offset.y - gloVar.pathD) * gloVar.pxtoCM).toFixed(3) + ")";
 };
 
 //재생 일시정지
@@ -282,11 +289,13 @@ function getInput() {
 
 //x좌표저장
 function storexcoords(x, xarray) {
-    if (xyline.style.display == 'none') {
+    if (gloVar.reverseCount % 2 != 0) {
+        console.log("여기로와야지");
         xarray.push(-x);
     }
     else {
         xarray.push(x);
+
     }
 
 }
@@ -324,13 +333,9 @@ function retry() {
             video.currentTime = video.currentTime - gloVar.customFrame;//한프레임 앞으로
             console.log("삭제완 : " + coords.frameTime);
         }
-        console.log("저장된 프레임들 : " + coords.frameTime);
-        console.log("삭제하려는 프레임 :" + (fixcurrentTime - gloVar.customFrame).toFixed(3));
-        console.log("frame index: " + frameindex);
 
     }
     if (gloVar.circleID == 0 && frameindex != -1) {
-        console.log("마지막 좌표값");
         divRemove();//표 형태까지 삭제
     }
     else {
@@ -408,8 +413,6 @@ function analysisMode() {
     var video = document.getElementById("vd1");
     var xylinebutton = document.getElementById("setxy");
     var playbutton = document.getElementById("pause");
-    var seekBar = document.getElementById("seek-bar");
-    var replayButton = document.getElementById("replay");
 
     // replayButton.disabled = true;
     // playbutton.disabled = true;
