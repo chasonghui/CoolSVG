@@ -175,8 +175,10 @@ function drawDot() {
     var xyline = document.getElementById("xyline");
     var video = document.getElementById("vd1");
     var inputform = document.getElementById("input1");
+    var retrybutton = document.getElementById("dotRedraw");
     var save_time = 0;//클릭시 동영상의 시간
     var find = 0;//프레임중복제거변수 
+
 
     //드래그 안하고 좌표 찍을 시
     if (flagObj.DragFlag === false) { alert("좌표의 위치를 옮겨주세요."); return; }
@@ -185,6 +187,7 @@ function drawDot() {
     flagObj.xylineFlag = true;
     xylinebutton.disabled = true;
     inputform.disabled = false;
+    retrybutton.disabled = false;
 
     setOrigin();//원점변환
 
