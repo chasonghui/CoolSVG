@@ -18,13 +18,13 @@ var coords = {
 var gloVar = {
     pxtoCM: 1,//input에 따라 좌표에 곱해질 변수
     circleID: 0,//동적으로 생성될 <circle>의 id값
-    dragCnt: 0,//드래그 횟수 count
+    dragCnt: 0,//드래그 횟수
     customFrame: 0.040,//임의로 정해놓은 Frame값
     pathD: 50,//<path 태그의 d위치값 (html에서 사용자 지정)
     guidePx: 100,//<path id=guideline의 L150 -M50
-    realx: 0,
-    realy: 0,
-    reverseCount: 0
+    realx: 0,//실제 픽셀좌표x
+    realy: 0,//실제 픽셀좌표y
+    reverseCount: 0//반전버튼 클릭횟수
 }
 
 //초기
@@ -148,15 +148,14 @@ function getNode(n, v) {
 
 //원점변환
 function setOrigin() {
-    var transforms = document.getElementById("xyline").transform.baseVal;//요소 가져옴
+    var transforms = document.getElementById("xyline").transform.baseVal;
     var translate = svg.createSVGTransform();//svgTransform
-    console.log(transforms);
-    transform = transforms.getItem(0);//transforms중에 제일 최근값
-    translate.setTranslate(0, 0);//원점으로 설정
-    var beforeCoords = {//drag할때마다 누적되는 x,y값 
+    var beforeCoords = {
         x: 0,
         y: 0
     }
+    transform = transforms.getItem(0);
+    translate.setTranslate(0, 0);//원점으로 설정
     //드래그 횟수가 2회 이상일 경우 누적된 x,y값을 함께 더해줌
     if (gloVar.dragCnt > -1) {
         for (var i = 0; i < gloVar.dragCnt; i++) {
@@ -171,56 +170,62 @@ function setOrigin() {
 
 //좌표고정 + 점찍기
 function drawDot() {
-    if (flagObj.DragFlag === false) { alert("좌표의 위치를 옮겨주세요."); return; }
     console.log("좌표고정");
     var xylinebutton = document.getElementById("setxy");
-    var xyline1 = document.getElementById("xyline1");
+    var xyline = document.getElementById("xyline");
     var video = document.getElementById("vd1");
     var inputform = document.getElementById("input1");
     var save_time = 0;//클릭시 동영상의 시간
     var find = 0;//프레임중복제거변수 
-    document.getElementById("xyline").classList.remove('draggable');//drag금지
 
+    //드래그 안하고 좌표 찍을 시
+    if (flagObj.DragFlag === false) { alert("좌표의 위치를 옮겨주세요."); return; }
 
+    xyline.classList.remove('draggable');//drag금지
     flagObj.xylineFlag = true;
-    xylinebutton.disabled = true;//좌표고정버튼 비활성화
+    xylinebutton.disabled = true;
     inputform.disabled = false;
 
     setOrigin();//원점변환
 
+    //좌표고정 버튼 누른 경우
     if (flagObj.xylineFlag == true) {
-        //svg클릭이벤트
         buttonDisable();//버튼 비활성화
         svg.addEventListener('click', function (ev) {
-            if (flagObj.inputFlag == false) {
-                alert("X의 길이를 입력해주세요");
-            }
+            //input submit 안했을 시
+            if (flagObj.inputFlag == false) { alert("X의 길이를 입력해주세요"); }
             else {
                 console.log("Click!");
                 save_time = video.currentTime;//클릭시 시간
-                function findtime(element) {//한 프레임에 하나만 찍기 : time배열에 동일한 시간이 존재하지 않도록함
+
+                //time배열에 동일한 시간이 존재하지 않도록함
+                function findtime(element) {
                     if (element === save_time.toFixed(3)) return true;
                 }
+
                 find = coords.frameTime.findIndex(findtime);//찾는값이 없을 시 -1 return
                 video.currentTime = save_time + gloVar.customFrame;//프레임이동
-                if ((find === -1)) {//동일한 프레임에 찍은 점이 없음
+
+                //동일한 프레임에 찍은 점이 없을 경우
+                if ((find === -1)) {
                     let m = getMousePosition(ev);
                     var pushx = (m.x - gloVar.realx - gloVar.pathD) * gloVar.pxtoCM;
                     var pushy = (m.y - gloVar.realy - gloVar.pathD) * gloVar.pxtoCM;
                     svg.appendChild(getNode('circle', { id: gloVar.circleID, class: "allCircle", cx: m.x, cy: m.y, r: 3, width: 20, height: 20, fill: 'red' }));
                     gloVar.circleID++;//id값 증가
-                    coords.frameTime.push(+save_time.toFixed(3));//클릭시 시간 push(소수점3자리로 끊음)
+                    //-----------------전역 객체에 xy좌표와 시간 저장--------------------------------------------
+                    coords.frameTime.push(+save_time.toFixed(3));
                     storexcoords(+pushx.toFixed(3), coords.xcd);
                     storeycoords(-pushy.toFixed(3), coords.ycd);
                     drawTable();
                 }
                 else {//동일한 프레임에 찍은 점이 존재
-                    console.log("이미찍은 Frame");
+                    console.log("이미 찍은 Frame");
                 }
             }
 
         });
-    } else {
+    } else {//좌표고정 버튼 안누른 경우
         console.log("좌표 고정 버튼을 클릭하세요.");
     }
 }
@@ -253,14 +258,16 @@ function resizeSVG() {
 //readout
 svg.onmousemove = function (e) {
     var readout = document.getElementById("readout");
-    var xyline = document.getElementById("xyline");
     var offset = getMousePosition(e);
     var xminus = 1;
     offset.x -= gloVar.realx;
     offset.y -= gloVar.realy;
+
+    //xy좌표가 반전되었을 경우 x좌표에 -붙여서 출력
     if (gloVar.reverseCount % 2 != 0) {
         xminus = -1;
     }
+
     readout.innerHTML = "(" + (xminus * (offset.x - gloVar.pathD) * gloVar.pxtoCM).toFixed(3) + "," + -((offset.y - gloVar.pathD) * gloVar.pxtoCM).toFixed(3) + ")";
 };
 
@@ -269,6 +276,7 @@ function playPause() {
     resizeSVG();
     var video = document.getElementById("vd1");
     var playpause = document.getElementById("pause");
+
     if (flagObj.playFlag == true) {
         video.pause();
         playpause.innerText = "▷";
@@ -289,8 +297,8 @@ function getInput() {
 
 //x좌표저장
 function storexcoords(x, xarray) {
+    //xy좌표가 반전되었을 경우 x좌표에 -붙여서 저장
     if (gloVar.reverseCount % 2 != 0) {
-        console.log("여기로와야지");
         xarray.push(-x);
     }
     else {
@@ -302,22 +310,20 @@ function storexcoords(x, xarray) {
 
 //y좌표 저장
 function storeycoords(y, yarray) {
-
     yarray.push(y);
 }
 
 //다시찍기
 function retry() {
     //현재 비디오 프레임값(video.currentTime)을 coords의 frametime에서 찾은 후 그 위치의 index를 찾음
-    //찾은 인덱스값과 같은 x,y인덱스를 찾아서 그 위치의 값을 삭제하고 (오브젝트에서 삭제)
-    //찾은 인덱스값을 id값으로 가진 <circle>태그 자체를 삭제
-    console.log("다시찍기");
+    //찾은 인덱스값과 같은 x,y인덱스를 찾아서 그 위치의 값을 삭제하고
+    //찾은 인덱스값을 id값으로 가진 <circle>태그 삭제
     var video = document.getElementById("vd1");
     var fixcurrentTime = video.currentTime
     var frameindex = coords.frameTime.indexOf(fixcurrentTime.toFixed(3) - gloVar.customFrame.toFixed(3));
 
     if (gloVar.circleID > 0) {
-        gloVar.circleID--;// <circle>에 부여되는 id값 감소(다시찍기를 다시할때 필요)
+        gloVar.circleID--;// <circle>에 부여되는 id값 감소(다시찍기를 다시할때 필요)-> 이 기능 안씀 0826
         if (frameindex === -1) {//찾으려는 값이 없을때 
             console.log("삭제하려는 프레임" + fixcurrentTime.toFixed(3) - gloVar.customFrame.toFixed(3) + "에 찍힌 좌표가 존재하지 않음");
         }
