@@ -1,7 +1,7 @@
 if (!token) {
     localStorage.setItem(
         LOCALSTORAGE_TOKEN,
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjI5MjYxMjQ3fQ.XSHHyUa3H0Up8Q4cvWuGJL9YG9YV237z0p2bPO-bYXM"
+        "TOKEN HERE"
     );
 }
 
