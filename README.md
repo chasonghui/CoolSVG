@@ -1,44 +1,66 @@
-# Web-based experimental video analysis
+# 웹기반 물리실험 가상화
 
-<img src=https://user-images.githubusercontent.com/44563011/131056297-2712f9c4-dfa9-401f-b427-02b1609e289a.PNG width="800" height="580">
-<img src=https://user-images.githubusercontent.com/44563011/131056306-ffdc49b3-e57f-458a-b8c8-7a2b91a7211c.PNG width="800" height="480">
-<img src=https://user-images.githubusercontent.com/44563011/131056309-248131f4-bb25-4781-b8a3-c1d015e0984c.PNG width="800" height="400">   
 
+# 📰 프로젝트 개요
+
+**웹기반 물리실험 가상화**
+<br> <br>
+비대면 수업으로 인해 물리실험을 영상으로 시청하는 물리학과 대학생들을 위해 물리실험 영상을 분석하고 결과를 저장하는 웹 <br> 
+
+<br>
+
+# 🗓️ 개발기간
+
+**2021.07 ~ 2021.09 (8주)**
+
+
+<br>
+
+# 🌟 Team
+
+| 이름         | 역할                                      |
+| ------------ | -------------------------------------------- |
+| **차송희**  | 영상분석 관련 기능        |
+| **김민정** | 그래프 피팅 관련 기능                                |
+
+<br>
+
+# 🛠️ 기술스택
+
+| Tech         | Stack                                        |
+| ------------ | -------------------------------------------- |
+| **Backend**  | GraphQL           |
+| **Frontend** | React.js                                 |
+
+<br>
+
+# 🔎 주요 기능
 
 ## function
 1. 분석모드(analysis mode)
-- XYLine : draggable SVG, reverse xaixs
-- Video onmouse => readout coordinate
-- Set origin => coordinate transformation
-- Set guideline length => coordinate transformation
-- Draw a circle by clicking on the desired location on the video.
-- A table is created on every click(handsontable)
-- The circle can be redrawn with the redraw button
+- 좌표계 : draggable SVG, 좌우반전 
+- 비디오위 마우스 클릭 시 : 좌표 표시 및 좌표 표에 저장
+- 원점 설정: 원하는곳에 좌표계 위치시킨 후 원점설정 버튼 클릭시 원점으로 설정됨
+- 가이드라인 설정: 가이드라인 사이즈 설정시 좌표계 변환
+- 다시 그리기 : 다시그리기 버튼을 통해 좌표 다시 찍기 가능
 
 2. 그래프 출력(create graph)
-- Drawing graphs with tabular data
-- Area selection and fitting graph (linear, curved) drawing
-- Table is modified, reflected in the graph
-- Zoom in, zoom out
-- data hover
-- save as png
+- 표 데이터를 Chart.js로 출력
+- 그래프 피팅(선형, 곡선)
+- 표 데이터 수정시 차트도 수정됨
+- 확대, 축소
+- 이미지로 저장
 
 3. Graphql API
-- Put solverid and save the table
-- Put UserdatasID to load table
+- 사용자 아이디와 찍은 좌표의 표 데이터 저장
+- 사용자 아이디를 통해 표 데이터 불러오기
 
-### Prerequisites
+#  실행 화면
+| Tech         | Stack                                        |
+| ------------ | -------------------------------------------- |
+| **영상분석**  | <img src=https://user-images.githubusercontent.com/44563011/131056297-2712f9c4-dfa9-401f-b427-02b1609e289a.PNG width="700" height="580">         |
+| **그래프** | <img src=https://user-images.githubusercontent.com/44563011/131056306-ffdc49b3-e57f-458a-b8c8-7a2b91a7211c.PNG width="700" height="480">                             |
+| **그래프 피팅** | <img src=https://user-images.githubusercontent.com/44563011/131056309-248131f4-bb25-4781-b8a3-c1d015e0984c.PNG width="700" height="400">                                |
 
-
-```
-grapql API(서버 연결시)
-```
-
-
-## Built With
-
-* [kmj0792](https://github.com/kmj0792) - All functions related to graphs
-
-## License
 
 
